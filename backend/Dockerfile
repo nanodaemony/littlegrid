@@ -39,8 +39,8 @@ RUN apk add --no-cache tzdata && \
     echo "Asia/Shanghai" > /etc/timezone && \
     apk del tzdata
 
-# 复制 JAR 文件 - 使用 grid-app 作为主应用
-COPY --from=builder /app/grid-app/target/grid-app-2.7.jar app.jar
+# 复制 JAR 文件 - 使用 grid-system 作为主应用（exec classifier）
+COPY --from=builder /app/grid-system/target/grid-system-2.7-exec.jar app.jar
 
 # 创建日志目录
 RUN mkdir -p /app/logs
