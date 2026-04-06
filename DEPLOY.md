@@ -5,9 +5,9 @@
 创建 `.env` 文件：
 
 ```bash
-DB_ROOT_PASSWORD=your_mysql_password_here
-DB_NAME=eladmin
-REDIS_PWD=your_redis_password_here
+DB_ROOT_PASSWORD=your_password
+DB_NAME=little-grid
+REDIS_PWD=your_password
 ```
 
 ## 部署命令

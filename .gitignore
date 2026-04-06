@@ -5,6 +5,9 @@
 .env
 *.env.local
 
+# Docker 数据目录
+data/
+
 # ==================== 通用 ====================
 # macOS
 .DS_Store
