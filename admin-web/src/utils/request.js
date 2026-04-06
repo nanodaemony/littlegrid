@@ -1,4 +1,5 @@
 import axios from 'axios'
+import Logger from '@/utils/logger'
 import router from '@/router/routers'
 import { Notification } from 'element-ui'
 import store from '../store'
@@ -15,25 +16,49 @@ const service = axios.create({
 // request拦截器
 service.interceptors.request.use(
   config => {
+    // 生成 TraceId
+    const traceId = Logger.generateTraceId()
+    config.headers['X-Trace-Id'] = traceId
+    Logger.setTraceId(traceId)
+
     if (getToken()) {
-      config.headers['Authorization'] = getToken() // 让每个请求携带自定义token 请根据实际情况自行修改
+      config.headers['Authorization'] = getToken()
     }
     config.headers['Content-Type'] = 'application/json'
+
+    // 打印请求日志
+    Logger.info('HTTP', `${config.method?.toUpperCase() || 'GET'} ${config.url}`, {
+      params: config.params,
+      data: config.data
+    })
+
     return config
   },
   error => {
-    Promise.reject(error)
+    Logger.error('HTTP', '请求配置失败', error)
+    return Promise.reject(error)
   }
 )
 
 // response 拦截器
 service.interceptors.response.use(
   response => {
+    // 打印响应日志
+    Logger.info('HTTP', `响应 ${response.config?.url}`, {
+      status: response.status,
+      data: response.data
+    })
     return response.data
   },
   error => {
+    // 打印错误日志
+    Logger.error('HTTP', `请求失败 ${error.config?.url}`, {
+      status: error.response?.status,
+      message: error.response?.data?.message || error.message
+    })
+
     // 兼容blob下载出错json提示
-    if (error.response.data instanceof Blob && error.response.data.type.toLowerCase().indexOf('json') !== -1) {
+    if (error.response?.data instanceof Blob && error.response?.data.type?.toLowerCase().indexOf('json') !== -1) {
       const reader = new FileReader()
       reader.readAsText(error.response.data, 'utf-8')
       reader.onload = function(e) {
@@ -46,7 +71,7 @@ service.interceptors.response.use(
     } else {
       let code = 0
       try {
-        code = error.response.data.status
+        code = error.response?.data?.status
       } catch (e) {
         if (error.toString().indexOf('Error: timeout') !== -1) {
           Notification.error({
@@ -56,18 +81,16 @@ service.interceptors.response.use(
           return Promise.reject(error)
         }
       }
-      console.log(code)
       if (code) {
         if (code === 401) {
           store.dispatch('LogOut').then(() => {
-            // 用户登录界面提示
             Cookies.set('point', 401)
             location.reload()
           })
         } else if (code === 403) {
           router.push({ path: '/401' })
         } else {
-          const errorMsg = error.response.data.message
+          const errorMsg = error.response?.data?.message
           if (errorMsg !== undefined) {
             Notification.error({
               title: errorMsg,
