@@ -58,19 +58,24 @@ public class RequestLogFilter implements Filter {
         long startTime = System.currentTimeMillis();
         String traceId = MDC.get(LogConstants.TRACE_ID_MDC_KEY);
 
-        // 先执行请求，让内容被缓存
-        chain.doFilter(wrappedRequest, wrappedResponse);
+        try {
+            // 先执行请求，让内容被缓存
+            chain.doFilter(wrappedRequest, wrappedResponse);
 
-        long duration = System.currentTimeMillis() - startTime;
+            long duration = System.currentTimeMillis() - startTime;
 
-        // 打印请求日志
-        logRequest(wrappedRequest, traceId);
+            // 打印请求日志
+            logRequest(wrappedRequest, traceId);
 
-        // 打印响应日志
-        logResponse(wrappedResponse, traceId, duration);
-
-        // 将缓存的内容写回原始响应
-        wrappedResponse.copyBodyToResponse();
+            // 打印响应日志
+            logResponse(wrappedResponse, traceId, duration);
+        } catch (Exception e) {
+            log.error("Error processing request: {}", e.getMessage());
+            throw e;
+        } finally {
+            // 将缓存的内容写回原始响应 - 必须在 finally 中确保执行
+            wrappedResponse.copyBodyToResponse();
+        }
     }
 
     /**
