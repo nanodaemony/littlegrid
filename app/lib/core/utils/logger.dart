@@ -19,12 +19,22 @@ final logger = Logger(
 class AppLogger {
   static final LogStorageService _storage = LogStorageService();
 
+  /// 标记数据库是否已准备好（避免循环依赖）
+  static bool _dbReady = false;
+
+  /// 设置数据库已准备好
+  static void setDbReady() {
+    _dbReady = true;
+  }
+
   /// Debug 级别日志
   static void d(String message, {String? module, String? traceId}) {
     final tid = traceId ?? TraceService().currentTraceId;
     logger.d('[${module ?? 'App'}] [$tid] $message');
     DebugLogService().addLog('DEBUG', '[${module ?? 'App'}] $message');
-    _storage.save(level: 'DEBUG', message: message, module: module, traceId: tid);
+    if (_dbReady) {
+      _storage.save(level: 'DEBUG', message: message, module: module, traceId: tid);
+    }
   }
 
   /// Info 级别日志
@@ -32,7 +42,9 @@ class AppLogger {
     final tid = traceId ?? TraceService().currentTraceId;
     logger.i('[${module ?? 'App'}] [$tid] $message');
     DebugLogService().addLog('INFO', '[${module ?? 'App'}] $message');
-    _storage.save(level: 'INFO', message: message, module: module, traceId: tid);
+    if (_dbReady) {
+      _storage.save(level: 'INFO', message: message, module: module, traceId: tid);
+    }
   }
 
   /// Warning 级别日志
@@ -40,7 +52,9 @@ class AppLogger {
     final tid = traceId ?? TraceService().currentTraceId;
     logger.w('[${module ?? 'App'}] [$tid] $message');
     DebugLogService().addLog('WARNING', '[${module ?? 'App'}] $message');
-    _storage.save(level: 'WARNING', message: message, module: module, traceId: tid);
+    if (_dbReady) {
+      _storage.save(level: 'WARNING', message: message, module: module, traceId: tid);
+    }
   }
 
   /// Error 级别日志
@@ -49,7 +63,9 @@ class AppLogger {
     final errorStr = error != null ? error.toString() : null;
     logger.e('[${module ?? 'App'}] [$tid] $message', error: error, stackTrace: stackTrace);
     DebugLogService().addLog('ERROR', '[${module ?? 'App'}] $message');
-    _storage.save(level: 'ERROR', message: message, module: module, traceId: tid, error: errorStr);
+    if (_dbReady) {
+      _storage.save(level: 'ERROR', message: message, module: module, traceId: tid, error: errorStr);
+    }
   }
 
   // ============ 便捷方法 ============

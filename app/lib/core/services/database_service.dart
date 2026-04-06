@@ -15,18 +15,25 @@ class DatabaseService {
     final databasesPath = await getDatabasesPath();
     final path = join(databasesPath, AppConstants.dbName);
 
-    AppLogger.i('Initializing database at: $path');
+    // 使用 print 而不是 AppLogger，避免循环依赖
+    print('[Database] Initializing database at: $path');
 
-    return await openDatabase(
+    final db = await openDatabase(
       path,
       version: AppConstants.dbVersion,
       onCreate: _onCreate,
       onUpgrade: _onUpgrade,
     );
+
+    // 数据库初始化完成，启用日志持久化
+    AppLogger.setDbReady();
+    print('[Database] Database initialized successfully');
+
+    return db;
   }
 
   static Future<void> _onCreate(Database db, int version) async {
-    AppLogger.i('Creating database tables...');
+    print('[Database] Creating database tables...');
 
     // 工具配置表
     await db.execute('''
@@ -245,7 +252,7 @@ class DatabaseService {
     await db.execute('CREATE INDEX idx_logs_timestamp ON logs(timestamp)');
     await db.execute('CREATE INDEX idx_logs_trace_id ON logs(trace_id)');
 
-    AppLogger.i('Database tables created successfully');
+    print('[Database] Database tables created successfully');
   }
 
   static Future<void> _onUpgrade(
@@ -253,7 +260,7 @@ class DatabaseService {
     int oldVersion,
     int newVersion,
   ) async {
-    AppLogger.i('Upgrading database from $oldVersion to $newVersion');
+    print('[Database] Upgrading database from $oldVersion to $newVersion');
 
     if (oldVersion < 2) {
       // 添加日历记事表
@@ -266,7 +273,7 @@ class DatabaseService {
           updated_at INTEGER NOT NULL
         )
       ''');
-      AppLogger.i('Added calendar_notes table');
+      print('[Database] Added calendar_notes table');
     }
 
     if (oldVersion < 3) {
@@ -285,7 +292,7 @@ class DatabaseService {
           updated_at INTEGER NOT NULL
         )
       ''');
-      AppLogger.i('Added alarms table');
+      print('[Database] Added alarms table');
     }
 
     if (oldVersion < 4) {
@@ -299,7 +306,7 @@ class DatabaseService {
           completed INTEGER NOT NULL DEFAULT 1
         )
       ''');
-      AppLogger.i('Added pomodoro_records table');
+      print('[Database] Added pomodoro_records table');
     }
 
     if (oldVersion < 5) {
@@ -350,7 +357,7 @@ class DatabaseService {
       ''');
       await db.execute('CREATE INDEX idx_account_budgets_category_month ON account_budgets(category_id, month)');
 
-      AppLogger.i('Added account tables');
+      print('[Database] Added account tables');
     }
 
     if (oldVersion < 6) {
@@ -374,13 +381,13 @@ class DatabaseService {
         )
       ''');
 
-      AppLogger.i('Added drink_plan tables');
+      print('[Database] Added drink_plan tables');
     }
 
     if (oldVersion < 7) {
       // Delete old wheel_options table if exists (conflict with new schema)
       await db.execute('DROP TABLE IF EXISTS wheel_options');
-      AppLogger.i('Dropped old wheel_options table');
+      print('[Database] Dropped old wheel_options table');
 
       // Create wheel collections table
       await db.execute('''
@@ -414,7 +421,7 @@ class DatabaseService {
       ''');
 
       await db.execute('CREATE INDEX idx_wheel_options_collection ON wheel_options(collection_id)');
-      AppLogger.i('Added big wheel tables');
+      print('[Database] Added big wheel tables');
     }
 
     if (oldVersion < 8) {
@@ -432,7 +439,7 @@ class DatabaseService {
           updated_at INTEGER NOT NULL
         )
       ''');
-      AppLogger.i('Added anniversary_items table');
+      print('[Database] Added anniversary_items table');
     }
 
     if (oldVersion < 9) {
@@ -450,7 +457,7 @@ class DatabaseService {
       ''');
       await db.execute('CREATE INDEX idx_logs_timestamp ON logs(timestamp)');
       await db.execute('CREATE INDEX idx_logs_trace_id ON logs(trace_id)');
-      AppLogger.i('Added logs table');
+      print('[Database] Added logs table');
     }
   }
 
