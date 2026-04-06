@@ -13,7 +13,8 @@ RUN --mount=type=cache,target=/root/.npm \
 # 复制源码
 COPY . .
 
-# 构建生产版本
+# 构建生产版本 - 添加 OpenSSL legacy provider 支持 Node 18
+ENV NODE_OPTIONS=--openssl-legacy-provider
 RUN npm run build:prod
 
 # 运行时镜像
