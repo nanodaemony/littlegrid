@@ -1,3 +1,4 @@
+import 'dart:developer' as developer;
 import 'package:flutter/material.dart';
 import '../core/services/auth_service.dart';
 import '../models/user.dart';
@@ -32,13 +33,16 @@ class AuthProvider extends ChangeNotifier {
     notifyListeners();
 
     try {
+      developer.log('AuthProvider: Starting login for phone=$phone', name: 'AuthProvider');
       final result = await AuthService.loginWithPhone(phone, password, deviceId);
       _currentUser = result.user;
       _isLoggedIn = true;
       _isLoading = false;
       notifyListeners();
+      developer.log('AuthProvider: Login successful, user=${result.user.id}', name: 'AuthProvider');
       return true;
     } catch (e) {
+      developer.log('AuthProvider: Login failed, error=$e', name: 'AuthProvider');
       _isLoading = false;
       notifyListeners();
       throw e;
@@ -51,13 +55,16 @@ class AuthProvider extends ChangeNotifier {
     notifyListeners();
 
     try {
+      developer.log('AuthProvider: Starting registration for phone=$phone, deviceId=$deviceId', name: 'AuthProvider');
       final result = await AuthService.register(phone, password, deviceId);
       _currentUser = result.user;
       _isLoggedIn = true;
       _isLoading = false;
       notifyListeners();
+      developer.log('AuthProvider: Registration successful, user=${result.user.id}', name: 'AuthProvider');
       return true;
     } catch (e) {
+      developer.log('AuthProvider: Registration failed, error=$e', name: 'AuthProvider');
       _isLoading = false;
       notifyListeners();
       throw e;

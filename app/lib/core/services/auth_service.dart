@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:developer' as developer;
 import 'package:http/http.dart' as http;
 import '../../models/user.dart';
 import 'secure_storage.dart';
@@ -29,15 +30,22 @@ class AuthService {
 
   /// Phone registration
   static Future<AuthResult> register(String phone, String password, String deviceId) async {
+    developer.log('Register request: phone=$phone, deviceId=$deviceId', name: 'AuthService');
+
+    final requestBody = jsonEncode({
+      'phone': phone,
+      'password': password,
+      'deviceId': deviceId,
+    });
+    developer.log('Register request body: $requestBody', name: 'AuthService');
+
     final response = await http.post(
       Uri.parse('$_baseUrl/register'),
       headers: {'Content-Type': 'application/json'},
-      body: jsonEncode({
-        'phone': phone,
-        'password': password,
-        'deviceId': deviceId,
-      }),
+      body: requestBody,
     );
+
+    developer.log('Register response: status=${response.statusCode}, body=${response.body}', name: 'AuthService');
 
     if (response.statusCode == 200) {
       final result = AuthResult.fromJson(jsonDecode(response.body));
