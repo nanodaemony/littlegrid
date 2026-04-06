@@ -119,9 +119,11 @@ deploy_backend() {
     -p 8000:8000 \
     -v "$SCRIPT_DIR/logs:/app/logs" \
     -e SPRING_PROFILES_ACTIVE=prod \
-    -e SPRING_DATASOURCE_DRUID_URL="jdbc:p6spy:mysql://littlegrid-mysql:3306/$DB_NAME?serverTimezone=Asia/Shanghai&characterEncoding=utf8&useSSL=false&allowPublicKeyRetrieval=true" \
-    -e SPRING_DATASOURCE_USERNAME=root \
-    -e SPRING_DATASOURCE_PASSWORD="$MYSQL_PWD" \
+    -e DB_HOST=littlegrid-mysql \
+    -e DB_PORT=3306 \
+    -e DB_NAME="$DB_NAME" \
+    -e DB_USER=root \
+    -e DB_PWD="$MYSQL_PWD" \
     -e REDIS_HOST=littlegrid-redis \
     -e REDIS_PORT=6379 \
     -e REDIS_PWD="$REDIS_PWD" \
