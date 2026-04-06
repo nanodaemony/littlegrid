@@ -27,6 +27,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.util.Collections;
 import java.util.Enumeration;
 import java.util.stream.Collectors;
 
@@ -107,7 +108,7 @@ public class RequestLogFilter implements Filter {
      */
     private String extractHeaders(HttpServletRequest request) {
         Enumeration<String> headerNames = request.getHeaderNames();
-        return headerNames.stream()
+        return Collections.list(headerNames).stream()
             .map(name -> name + "=" + request.getHeader(name))
             .filter(header -> !header.toLowerCase().contains("authorization"))
             .collect(Collectors.joining(", "));
