@@ -12,7 +12,7 @@ YELLOW='\033[1;33m'
 NC='\033[0m' # No Color
 
 # 项目根目录
-PROJECT_DIR="/home/nano/littlegrid"
+PROJECT_DIR="/home/nano/little-grid"
 cd "$PROJECT_DIR"
 
 # 函数：打印帮助信息

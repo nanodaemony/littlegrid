@@ -7,21 +7,23 @@ COPY settings.xml /usr/share/maven/ref/settings.xml
 
 # 复制所有 pom.xml 文件
 COPY pom.xml .
-COPY eladmin-common/pom.xml eladmin-common/
-COPY eladmin-logging/pom.xml eladmin-logging/
-COPY eladmin-system/pom.xml eladmin-system/
-COPY eladmin-tools/pom.xml eladmin-tools/
-COPY eladmin-generator/pom.xml eladmin-generator/
+COPY grid-common/pom.xml grid-common/
+COPY grid-logging/pom.xml grid-logging/
+COPY grid-system/pom.xml grid-system/
+COPY grid-tools/pom.xml grid-tools/
+COPY grid-generator/pom.xml grid-generator/
+COPY grid-app/pom.xml grid-app/
 
 # 下载依赖 (如果 pom.xml 没变，这一层会被缓存)
 RUN mvn dependency:go-offline -B
 
 # 复制源码
-COPY eladmin-common/src eladmin-common/src
-COPY eladmin-logging/src eladmin-logging/src
-COPY eladmin-system/src eladmin-system/src
-COPY eladmin-tools/src eladmin-tools/src
-COPY eladmin-generator/src eladmin-generator/src
+COPY grid-common/src grid-common/src
+COPY grid-logging/src grid-logging/src
+COPY grid-system/src grid-system/src
+COPY grid-tools/src grid-tools/src
+COPY grid-generator/src grid-generator/src
+COPY grid-app/src grid-app/src
 
 # 构建项目
 RUN mvn clean package -DskipTests
@@ -37,8 +39,8 @@ RUN apk add --no-cache tzdata && \
     echo "Asia/Shanghai" > /etc/timezone && \
     apk del tzdata
 
-# 复制 JAR 文件 - 使用 eladmin-system 作为主应用
-COPY --from=builder /app/eladmin-system/target/eladmin-system-2.7.jar app.jar
+# 复制 JAR 文件 - 使用 grid-app 作为主应用
+COPY --from=builder /app/grid-app/target/grid-app-2.7.jar app.jar
 
 # 创建日志目录
 RUN mkdir -p /app/logs
