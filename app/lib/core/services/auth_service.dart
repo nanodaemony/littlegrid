@@ -1,22 +1,22 @@
 import 'dart:convert';
-import 'dart:developer' as developer;
-import 'package:http/http.dart' as http;
 import '../../models/user.dart';
 import 'secure_storage.dart';
+import 'http_client.dart';
+import '../utils/logger.dart';
 
 class AuthService {
   static const _baseUrl = 'http://8.137.39.155:8080/api/app/auth';
 
   /// Phone login
   static Future<AuthResult> loginWithPhone(String phone, String password, String deviceId) async {
-    final response = await http.post(
+    final response = await HttpClient.post(
       Uri.parse('$_baseUrl/login'),
-      headers: {'Content-Type': 'application/json'},
-      body: jsonEncode({
+      body: {
         'phone': phone,
         'password': password,
         'deviceId': deviceId,
-      }),
+      },
+      module: 'AuthService',
     );
 
     if (response.statusCode == 200) {
@@ -30,22 +30,15 @@ class AuthService {
 
   /// Phone registration
   static Future<AuthResult> register(String phone, String password, String deviceId) async {
-    developer.log('Register request: phone=$phone, deviceId=$deviceId', name: 'AuthService');
-
-    final requestBody = jsonEncode({
-      'phone': phone,
-      'password': password,
-      'deviceId': deviceId,
-    });
-    developer.log('Register request body: $requestBody', name: 'AuthService');
-
-    final response = await http.post(
+    final response = await HttpClient.post(
       Uri.parse('$_baseUrl/register'),
-      headers: {'Content-Type': 'application/json'},
-      body: requestBody,
+      body: {
+        'phone': phone,
+        'password': password,
+        'deviceId': deviceId,
+      },
+      module: 'AuthService',
     );
-
-    developer.log('Register response: status=${response.statusCode}, body=${response.body}', name: 'AuthService');
 
     if (response.statusCode == 200) {
       final result = AuthResult.fromJson(jsonDecode(response.body));
@@ -65,16 +58,14 @@ class AuthService {
       throw Exception('请先登录');
     }
 
-    final response = await http.post(
+    final response = await HttpClient.post(
       Uri.parse('$_baseUrl/bind/phone'),
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': token,
-      },
-      body: jsonEncode({
+      headers: {'Authorization': token},
+      body: {
         'phone': phone,
         'password': password,
-      }),
+      },
+      module: 'AuthService',
     );
 
     if (response.statusCode == 200) {
@@ -100,15 +91,13 @@ class AuthService {
     final token = await SecureStorage.getToken();
     if (token != null) {
       try {
-        await http.delete(
+        await HttpClient.delete(
           Uri.parse('$_baseUrl/logout'),
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': token,
-          },
+          headers: {'Authorization': token},
+          module: 'AuthService',
         );
       } catch (e) {
-        // Ignore network errors
+        AppLogger.w('Logout request failed', module: 'AuthService');
       }
     }
     await SecureStorage.clear();
@@ -147,15 +136,11 @@ class AuthService {
       throw Exception('请先登录');
     }
 
-    final response = await http.post(
+    final response = await HttpClient.post(
       Uri.parse('$_baseUrl/user/bind-email'),
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': token,
-      },
-      body: jsonEncode({
-        'email': email,
-      }),
+      headers: {'Authorization': token},
+      body: {'email': email},
+      module: 'AuthService',
     );
 
     if (response.statusCode == 200) {
@@ -167,12 +152,10 @@ class AuthService {
 
   /// Send password reset verification code
   static Future<void> sendResetCode(String phone) async {
-    final response = await http.post(
+    final response = await HttpClient.post(
       Uri.parse('$_baseUrl/auth/send-reset-code'),
-      headers: {'Content-Type': 'application/json'},
-      body: jsonEncode({
-        'phone': phone,
-      }),
+      body: {'phone': phone},
+      module: 'AuthService',
     );
 
     if (response.statusCode == 200) {
@@ -184,14 +167,14 @@ class AuthService {
 
   /// Reset password with verification code
   static Future<void> resetPassword(String phone, String code, String password) async {
-    final response = await http.post(
+    final response = await HttpClient.post(
       Uri.parse('$_baseUrl/auth/reset-password'),
-      headers: {'Content-Type': 'application/json'},
-      body: jsonEncode({
+      body: {
         'phone': phone,
         'code': code,
         'password': password,
-      }),
+      },
+      module: 'AuthService',
     );
 
     if (response.statusCode == 200) {
