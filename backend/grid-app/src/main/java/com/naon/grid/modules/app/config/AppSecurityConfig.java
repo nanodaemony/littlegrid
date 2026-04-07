@@ -5,18 +5,22 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.web.SecurityFilterChain;
 
 @Configuration
+@EnableWebSecurity
+@Order(1)
 @RequiredArgsConstructor
-public class AppSecurityConfig {
+public class AppSecurityConfig extends WebSecurityConfigurerAdapter {
 
-    @Bean
-    @Order(1)  // 优先级高于主SecurityConfig
-    public SecurityFilterChain appSecurityFilterChain(HttpSecurity http) throws Exception {
+    @Override
+    protected void configure(HttpSecurity http) throws Exception {
         http
-            .securityMatcher("/api/app/**")
+            .requestMatchers()
+            .antMatchers("/api/app/**")
+            .and()
             .csrf().disable()
             .sessionManagement()
             .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
@@ -25,7 +29,5 @@ public class AppSecurityConfig {
             .antMatchers("/api/app/auth/register").permitAll()
             .antMatchers("/api/app/auth/login").permitAll()
             .anyRequest().authenticated();
-
-        return http.build();
     }
 }
