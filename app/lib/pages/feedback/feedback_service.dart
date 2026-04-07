@@ -3,7 +3,7 @@ import 'package:http/http.dart' as http;
 import '../../core/services/secure_storage.dart';
 
 class FeedbackService {
-  static const _baseUrl = 'http://8.137.39.155:8080/api/feedback';
+  static const _baseUrl = 'http://8.137.182.152:8000/api/feedback';
 
   static Future<void> submitFeedback({
     required String type,

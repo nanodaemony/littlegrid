@@ -5,7 +5,7 @@ import 'http_client.dart';
 import '../utils/logger.dart';
 
 class AuthService {
-  static const _baseUrl = 'http://8.137.39.155:8080/api/app/auth';
+  static const _baseUrl = 'http://8.137.182.152:8000/api/app/auth';
 
   /// Phone login
   static Future<AuthResult> loginWithPhone(String phone, String password, String deviceId) async {

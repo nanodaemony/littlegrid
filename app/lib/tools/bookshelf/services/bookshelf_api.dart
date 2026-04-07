@@ -8,7 +8,7 @@ import '../models/item.dart';
 import '../models/tag.dart';
 
 class BookshelfApi {
-  static const _baseUrl = 'http://8.137.39.155:8080/api/tools/bookshelf';
+  static const _baseUrl = 'http://8.137.182.152:8000/api/tools/bookshelf';
 
   static Future<String> _getToken() async {
     final token = await SecureStorage.getToken();

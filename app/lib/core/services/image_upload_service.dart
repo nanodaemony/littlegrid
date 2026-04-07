@@ -7,7 +7,7 @@ import 'package:mime/mime.dart';
 import 'secure_storage.dart';
 
 class ImageUploadService {
-  static const _baseUrl = 'http://8.137.39.155:8080/api/app/upload';
+  static const _baseUrl = 'http://8.137.182.152:8000/api/app/upload';
 
   /// 上传单张图片
   static Future<String> uploadImage(dynamic imageFile, String businessType) async {
