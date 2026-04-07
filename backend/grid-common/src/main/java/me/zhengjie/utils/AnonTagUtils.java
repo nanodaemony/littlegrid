@@ -18,6 +18,7 @@ package com.naon.grid.utils;
 import com.naon.grid.annotation.rest.AnonymousAccess;
 import com.naon.grid.utils.enums.RequestMethodEnum;
 import org.springframework.context.ApplicationContext;
+import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.mvc.method.RequestMappingInfo;
@@ -50,7 +51,7 @@ public class AnonTagUtils {
         Set<String> all = new HashSet<>();
         for (Map.Entry<RequestMappingInfo, HandlerMethod> infoEntry : handlerMethodMap.entrySet()) {
             HandlerMethod handlerMethod = infoEntry.getValue();
-            AnonymousAccess anonymousAccess = handlerMethod.getMethodAnnotation(AnonymousAccess.class);
+            AnonymousAccess anonymousAccess = AnnotationUtils.findAnnotation(handlerMethod.getMethod(), AnonymousAccess.class);
             if (null != anonymousAccess) {
                 List<RequestMethod> requestMethods = new ArrayList<>(infoEntry.getKey().getMethodsCondition().getMethods());
                 RequestMethodEnum request = RequestMethodEnum.find(requestMethods.isEmpty() ? RequestMethodEnum.ALL.getType() : requestMethods.get(0).name());
