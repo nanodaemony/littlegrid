@@ -1,9 +1,10 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import '../../core/services/secure_storage.dart';
+import '../../core/constants/api_constants.dart';
 
 class FeedbackService {
-  static const _baseUrl = 'http://8.137.182.152:8000/api/feedback';
+  static const _baseUrl = '${ApiConstants.baseUrl}/api/feedback';
 
   static Future<void> submitFeedback({
     required String type,

@@ -3,9 +3,10 @@ import '../../models/user.dart';
 import 'secure_storage.dart';
 import 'http_client.dart';
 import '../utils/logger.dart';
+import '../constants/api_constants.dart';
 
 class AuthService {
-  static const _baseUrl = 'http://8.137.182.152:8000/api/app/auth';
+  static const _baseUrl = '${ApiConstants.baseUrl}${ApiConstants.appApiPrefix}/auth';
 
   /// Phone login
   static Future<AuthResult> loginWithPhone(String phone, String password, String deviceId) async {

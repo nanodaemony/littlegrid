@@ -3,12 +3,13 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import '../../../core/services/secure_storage.dart';
+import '../../../core/constants/api_constants.dart';
 import '../models/category.dart';
 import '../models/item.dart';
 import '../models/tag.dart';
 
 class BookshelfApi {
-  static const _baseUrl = 'http://8.137.182.152:8000/api/tools/bookshelf';
+  static const _baseUrl = '${ApiConstants.baseUrl}/api/tools/bookshelf';
 
   static Future<String> _getToken() async {
     final token = await SecureStorage.getToken();

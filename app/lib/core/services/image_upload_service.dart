@@ -5,9 +5,10 @@ import 'package:http/http.dart' as http;
 import 'package:http_parser/http_parser.dart';
 import 'package:mime/mime.dart';
 import 'secure_storage.dart';
+import '../constants/api_constants.dart';
 
 class ImageUploadService {
-  static const _baseUrl = 'http://8.137.182.152:8000/api/app/upload';
+  static const _baseUrl = '${ApiConstants.baseUrl}${ApiConstants.appApiPrefix}/upload';
 
   /// 上传单张图片
   static Future<String> uploadImage(dynamic imageFile, String businessType) async {
