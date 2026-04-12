@@ -58,20 +58,36 @@ public class TokenFilter extends GenericFilterBean {
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain)
             throws IOException, ServletException {
         HttpServletRequest httpServletRequest = (HttpServletRequest) servletRequest;
+        String requestUri = httpServletRequest.getRequestURI();
+        log.debug("Processing request: {}", requestUri);
+
+        String authHeader = httpServletRequest.getHeader(properties.getHeader());
+        log.debug("Authorization header: {}", authHeader);
+
         String token = resolveToken(httpServletRequest);
+        log.debug("Resolved token: {}", token != null ? "exists" : "null");
+
         // 对于 Token 为空的不需要去查 Redis
         if(StrUtil.isNotBlank(token)){
+            log.debug("Token is not blank, checking Redis...");
             // 获取用户Token的Key
             String loginKey = tokenProvider.loginKey(token);
+            log.debug("Login key: {}", loginKey);
             OnlineUserDto onlineUserDto = onlineUserService.getOne(loginKey);
+            log.debug("Online user: {}", onlineUserDto != null ? "found" : "not found");
             // 判断用户在线信息是否为空
             if (onlineUserDto != null) {
+                log.debug("Setting authentication in security context");
                 // Token 续期判断
                 tokenProvider.checkRenewal(token);
                 // 获取认证信息，设置上下文
                 Authentication authentication = tokenProvider.getAuthentication(token);
                 SecurityContextHolder.getContext().setAuthentication(authentication);
+            } else {
+                log.debug("No online user found for token");
             }
+        } else {
+            log.debug("Token is blank");
         }
         filterChain.doFilter(servletRequest, servletResponse);
     }
