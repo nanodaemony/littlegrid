@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'trace_service.dart';
+import 'secure_storage.dart';
 import '../utils/logger.dart';
 
 /// 统一 HTTP 客户端
@@ -47,6 +48,20 @@ class HttpClient {
       ...?headers,
     };
 
+    // 自动添加 Authorization header（仅当用户未传入时）
+    if (!allHeaders.containsKey('Authorization')) {
+      final token = await SecureStorage.getToken();
+      if (token != null && token.isNotEmpty) {
+        allHeaders['Authorization'] = 'Bearer $token';
+      }
+    } else {
+      // 如果用户已传入 Authorization header，确保有 Bearer 前缀
+      final authValue = allHeaders['Authorization'];
+      if (authValue != null && !authValue.startsWith('Bearer ')) {
+        allHeaders['Authorization'] = 'Bearer $authValue';
+      }
+    }
+
     final bodyStr = body != null ? jsonEncode(body) : null;
 
     // 打印请求日志
@@ -83,6 +98,20 @@ class HttpClient {
       ...?headers,
     };
 
+    // 自动添加 Authorization header（仅当用户未传入时）
+    if (!allHeaders.containsKey('Authorization')) {
+      final token = await SecureStorage.getToken();
+      if (token != null && token.isNotEmpty) {
+        allHeaders['Authorization'] = 'Bearer $token';
+      }
+    } else {
+      // 如果用户已传入 Authorization header，确保有 Bearer 前缀
+      final authValue = allHeaders['Authorization'];
+      if (authValue != null && !authValue.startsWith('Bearer ')) {
+        allHeaders['Authorization'] = 'Bearer $authValue';
+      }
+    }
+
     // 打印请求日志
     AppLogger.i('>>> GET ${url.path}', module: module, traceId: traceId);
 
@@ -111,6 +140,20 @@ class HttpClient {
       'X-Trace-Id': traceId,
       ...?headers,
     };
+
+    // 自动添加 Authorization header（仅当用户未传入时）
+    if (!allHeaders.containsKey('Authorization')) {
+      final token = await SecureStorage.getToken();
+      if (token != null && token.isNotEmpty) {
+        allHeaders['Authorization'] = 'Bearer $token';
+      }
+    } else {
+      // 如果用户已传入 Authorization header，确保有 Bearer 前缀
+      final authValue = allHeaders['Authorization'];
+      if (authValue != null && !authValue.startsWith('Bearer ')) {
+        allHeaders['Authorization'] = 'Bearer $authValue';
+      }
+    }
 
     // 打印请求日志
     AppLogger.i('>>> DELETE ${url.path}', module: module, traceId: traceId);
