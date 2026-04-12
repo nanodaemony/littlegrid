@@ -120,4 +120,21 @@ public class AppAuthServiceImpl implements AppAuthService {
         }
         return dto;
     }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public AppUserDTO updateUser(Long userId, UpdateUserDTO updateUserDTO) {
+        GridUser user = userRepository.findById(userId)
+                .orElseThrow(() -> new BadRequestException("用户不存在"));
+
+        if (StrUtil.isNotBlank(updateUserDTO.getNickname())) {
+            user.setNickname(updateUserDTO.getNickname());
+        }
+        if (StrUtil.isNotBlank(updateUserDTO.getEmail())) {
+            user.setEmail(updateUserDTO.getEmail());
+        }
+
+        userRepository.save(user);
+        return convertToDTO(user);
+    }
 }
