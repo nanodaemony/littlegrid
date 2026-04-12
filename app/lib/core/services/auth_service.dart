@@ -30,13 +30,14 @@ class AuthService {
   }
 
   /// Phone registration
-  static Future<AuthResult> register(String phone, String password, String deviceId) async {
+  static Future<AuthResult> register(String phone, String password, String deviceId, {String? nickname}) async {
     final response = await HttpClient.post(
       Uri.parse('$_baseUrl/register'),
       body: {
         'phone': phone,
         'password': password,
         'deviceId': deviceId,
+        if (nickname != null && nickname.isNotEmpty) 'nickname': nickname,
       },
       module: 'AuthService',
     );
