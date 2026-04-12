@@ -36,6 +36,7 @@ public class AppAuthServiceImpl implements AppAuthService {
     private final PasswordEncoder passwordEncoder;
     private final DeviceManager deviceManager;
     private final RedisUtils redisUtils;
+    private final com.naon.grid.modules.app.security.AppTokenProvider appTokenProvider;
 
     @Value("${app.auth.token-validity-in-seconds:604800}")
     private long tokenValidityInSeconds;
@@ -51,13 +52,8 @@ public class AppAuthServiceImpl implements AppAuthService {
         if (userRepository.existsByPhone(registerDTO.getPhone())) {
             throw new BadRequestException(AppErrorCode.PHONE_EXISTS.getMessage());
         }
-        // 解密密码
-        String decryptedPassword;
-        try {
-            decryptedPassword = RsaUtils.decryptByPrivateKey(RsaProperties.privateKey, registerDTO.getPassword());
-        } catch (Exception e) {
-            throw new BadRequestException("密码解密失败");
-        }
+        // 直接使用明文密码（开发测试用）
+        String decryptedPassword = registerDTO.getPassword();
         // 创建用户
         GridUser user = new GridUser();
         user.setUsername(registerDTO.getUsername());
@@ -80,12 +76,8 @@ public class AppAuthServiceImpl implements AppAuthService {
         if (AppUserStatus.DISABLED.getCode().equals(user.getStatus())) {
             throw new BadRequestException(AppErrorCode.USER_DISABLED.getMessage());
         }
-        String decryptedPassword;
-        try {
-            decryptedPassword = RsaUtils.decryptByPrivateKey(RsaProperties.privateKey, loginDTO.getPassword());
-        } catch (Exception e) {
-            throw new BadRequestException("密码解密失败");
-        }
+        // 直接使用明文密码（开发测试用）
+        String decryptedPassword = loginDTO.getPassword();
         if (!passwordEncoder.matches(decryptedPassword, user.getPassword())) {
             throw new BadRequestException(AppErrorCode.INVALID_CREDENTIALS.getMessage());
         }
@@ -107,9 +99,8 @@ public class AppAuthServiceImpl implements AppAuthService {
     }
 
     private TokenDTO generateToken(GridUser user, String deviceId) {
-        // 简化实现
         TokenDTO tokenDTO = new TokenDTO();
-        tokenDTO.setToken("mock_token_" + user.getId());
+        tokenDTO.setToken(appTokenProvider.createToken(user.getId(), user.getUsername(), deviceId));
         tokenDTO.setRefreshToken("mock_refresh_" + user.getId());
         tokenDTO.setExpiresIn(tokenValidityInSeconds);
         tokenDTO.setUser(convertToDTO(user));

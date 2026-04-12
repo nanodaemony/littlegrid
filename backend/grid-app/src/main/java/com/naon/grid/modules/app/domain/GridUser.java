@@ -1,6 +1,5 @@
 package com.naon.grid.modules.app.domain;
 
-import com.naon.grid.base.BaseEntity;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -19,7 +18,7 @@ import java.util.Date;
 @Getter
 @Setter
 @Table(name = "grid_user")
-public class GridUser extends BaseEntity implements Serializable {
+public class GridUser implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -72,4 +71,21 @@ public class GridUser extends BaseEntity implements Serializable {
 
     @Column(name = "wx_unionid", length = 50)
     private String wxUnionid;
+
+    @Column(name = "created_at")
+    private Date createdAt;
+
+    @Column(name = "updated_at")
+    private Date updatedAt;
+
+    @PrePersist
+    protected void onCreate() {
+        createdAt = new Date();
+        updatedAt = new Date();
+    }
+
+    @PreUpdate
+    protected void onUpdate() {
+        updatedAt = new Date();
+    }
 }

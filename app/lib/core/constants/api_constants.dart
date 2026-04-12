@@ -3,7 +3,7 @@
 class ApiConstants {
   // 基础配置 - 根据环境修改
   // 开发环境使用本地地址，生产环境修改为服务器地址
-  static const String baseUrl = 'http://8.137.182.152:8000';
+  static const String baseUrl = 'http://192.168.74.11:8000';
 
   static const String apiPrefix = '/api';
   static const String appApiPrefix = '$apiPrefix/app';

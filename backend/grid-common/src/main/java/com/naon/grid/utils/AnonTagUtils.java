@@ -17,6 +17,7 @@ package com.naon.grid.utils;
 
 import com.naon.grid.annotation.rest.AnonymousAccess;
 import com.naon.grid.utils.enums.RequestMethodEnum;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationContext;
 import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -31,6 +32,7 @@ import java.util.*;
  * @description 匿名标记工具
  * @date 2025-01-13
  **/
+@Slf4j
 public class AnonTagUtils {
 
     /**
@@ -39,8 +41,11 @@ public class AnonTagUtils {
      * @return /
      */
     public static Map<String, Set<String>> getAnonymousUrl(ApplicationContext applicationContext){
+        log.info("========== 开始扫描匿名接口 ==========");
         RequestMappingHandlerMapping requestMappingHandlerMapping = (RequestMappingHandlerMapping) applicationContext.getBean("requestMappingHandlerMapping");
         Map<RequestMappingInfo, HandlerMethod> handlerMethodMap = requestMappingHandlerMapping.getHandlerMethods();
+        log.info("总接口数: {}", handlerMethodMap.size());
+
         Map<String, Set<String>> anonymousUrls = new HashMap<>(8);
         // 获取匿名标记
         Set<String> get = new HashSet<>();
@@ -49,36 +54,49 @@ public class AnonTagUtils {
         Set<String> patch = new HashSet<>();
         Set<String> delete = new HashSet<>();
         Set<String> all = new HashSet<>();
+
+        int anonCount = 0;
         for (Map.Entry<RequestMappingInfo, HandlerMethod> infoEntry : handlerMethodMap.entrySet()) {
             HandlerMethod handlerMethod = infoEntry.getValue();
             AnonymousAccess anonymousAccess = AnnotationUtils.findAnnotation(handlerMethod.getMethod(), AnonymousAccess.class);
             if (null != anonymousAccess) {
+                anonCount++;
                 List<RequestMethod> requestMethods = new ArrayList<>(infoEntry.getKey().getMethodsCondition().getMethods());
                 RequestMethodEnum request = RequestMethodEnum.find(requestMethods.isEmpty() ? RequestMethodEnum.ALL.getType() : requestMethods.get(0).name());
                 if (infoEntry.getKey().getPatternsCondition()!=null) {
+                    Set<String> patterns = infoEntry.getKey().getPatternsCondition().getPatterns();
+                    log.info("找到匿名接口: {} {} - {}",
+                        requestMethods.isEmpty() ? "ALL" : requestMethods.get(0),
+                        patterns,
+                        handlerMethod.getMethod().getName());
+
                     switch (Objects.requireNonNull(request)) {
                         case GET:
-                            get.addAll(infoEntry.getKey().getPatternsCondition().getPatterns());
+                            get.addAll(patterns);
                             break;
                         case POST:
-                            post.addAll(infoEntry.getKey().getPatternsCondition().getPatterns());
+                            post.addAll(patterns);
                             break;
                         case PUT:
-                            put.addAll(infoEntry.getKey().getPatternsCondition().getPatterns());
+                            put.addAll(patterns);
                             break;
                         case PATCH:
-                            patch.addAll(infoEntry.getKey().getPatternsCondition().getPatterns());
+                            patch.addAll(patterns);
                             break;
                         case DELETE:
-                            delete.addAll(infoEntry.getKey().getPatternsCondition().getPatterns());
+                            delete.addAll(patterns);
                             break;
                         default:
-                            all.addAll(infoEntry.getKey().getPatternsCondition().getPatterns());
+                            all.addAll(patterns);
                             break;
                     }
                 }
             }
         }
+        log.info("找到 {} 个匿名接口", anonCount);
+        log.info("POST 匿名接口: {}", post);
+        log.info("========== 匿名接口扫描完成 ==========");
+
         anonymousUrls.put(RequestMethodEnum.GET.getType(), get);
         anonymousUrls.put(RequestMethodEnum.POST.getType(), post);
         anonymousUrls.put(RequestMethodEnum.PUT.getType(), put);

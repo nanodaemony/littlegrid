@@ -6,26 +6,24 @@ WORKDIR /app
 # 设置 Maven 使用阿里云镜像
 COPY settings.xml /usr/share/maven/ref/settings.xml
 
-# 复制所有 pom.xml 文件
+# 复制所有文件
 COPY pom.xml .
-COPY grid-common/pom.xml grid-common/
-COPY grid-logging/pom.xml grid-logging/
-COPY grid-system/pom.xml grid-system/
-COPY grid-tools/pom.xml grid-tools/
-COPY grid-generator/pom.xml grid-generator/
-COPY grid-app/pom.xml grid-app/
+COPY grid-common grid-common
+COPY grid-logging grid-logging
+COPY grid-system grid-system
+COPY grid-tools grid-tools
+COPY grid-generator grid-generator
+COPY grid-app grid-app
+
+# 从 pom.xml 中移除 grid-app 模块以避免循环依赖
+RUN sed -i '/<module>grid-app<\/module>/d' pom.xml
+
+# 复制 grid-app 源码到 grid-system 中
+RUN cp -r grid-app/src/main/java/com/naon/grid/modules/app grid-system/src/main/java/com/naon/grid/modules/
 
 # 下载依赖 - 使用缓存挂载持久化 Maven 本地仓库
 RUN --mount=type=cache,target=/root/.m2 \
     mvn dependency:go-offline -B
-
-# 复制源码
-COPY grid-common/src grid-common/src
-COPY grid-logging/src grid-logging/src
-COPY grid-system/src grid-system/src
-COPY grid-tools/src grid-tools/src
-COPY grid-generator/src grid-generator/src
-COPY grid-app/src grid-app/src
 
 # 构建项目 - 使用缓存挂载
 RUN --mount=type=cache,target=/root/.m2 \

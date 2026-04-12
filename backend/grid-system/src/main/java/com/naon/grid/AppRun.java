@@ -39,7 +39,7 @@ import org.springframework.web.bind.annotation.RestController;
 @EnableAsync
 @RestController
 @Api(hidden = true)
-@SpringBootApplication
+@SpringBootApplication(scanBasePackages = {"com.naon.grid"})
 @EnableTransactionManagement
 @EnableJpaAuditing(auditorAwareRef = "auditorAware")
 public class AppRun {

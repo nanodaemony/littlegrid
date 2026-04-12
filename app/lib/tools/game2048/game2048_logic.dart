@@ -112,7 +112,7 @@ class Game2048Logic {
           value: merged[k],
           row: row,
           col: col,
-          id: mergedIdsList[k] ?? Tile._nextId++,
+          id: mergedIdsList[k],
           isMerged: isMerged,
         ));
       }
