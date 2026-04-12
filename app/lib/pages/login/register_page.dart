@@ -15,6 +15,7 @@ class _RegisterPageState extends State<RegisterPage> {
   final _phoneController = TextEditingController();
   final _passwordController = TextEditingController();
   final _confirmPasswordController = TextEditingController();
+  final _nicknameController = TextEditingController();
   bool _isLoading = false;
   bool _obscurePassword = true;
   bool _obscureConfirmPassword = true;
@@ -105,6 +106,7 @@ class _RegisterPageState extends State<RegisterPage> {
         _phoneController.text,
         encryptedPassword,
         deviceId,
+        nickname: _nicknameController.text.trim().isEmpty ? null : _nicknameController.text.trim(),
       );
 
       ScaffoldMessenger.of(context).showSnackBar(
@@ -132,7 +134,7 @@ class _RegisterPageState extends State<RegisterPage> {
               controller: _phoneController,
               keyboardType: TextInputType.phone,
               decoration: const InputDecoration(
-                labelText: '手机号',
+                labelText: '手机号 *',
                 hintText: '请输入手机号',
                 prefixIcon: Icon(Icons.phone),
               ),
@@ -143,7 +145,7 @@ class _RegisterPageState extends State<RegisterPage> {
               obscureText: _obscurePassword,
               onChanged: _checkPasswordStrength,
               decoration: InputDecoration(
-                labelText: '密码',
+                labelText: '密码 *',
                 hintText: '至少8位，包含字母和数字',
                 prefixIcon: const Icon(Icons.lock),
                 suffixIcon: IconButton(
@@ -162,13 +164,22 @@ class _RegisterPageState extends State<RegisterPage> {
               controller: _confirmPasswordController,
               obscureText: _obscureConfirmPassword,
               decoration: InputDecoration(
-                labelText: '确认密码',
+                labelText: '确认密码 *',
                 hintText: '再次输入密码',
                 prefixIcon: const Icon(Icons.lock_outline),
                 suffixIcon: IconButton(
                   icon: Icon(_obscureConfirmPassword ? Icons.visibility_off : Icons.visibility),
                   onPressed: () => setState(() => _obscureConfirmPassword = !_obscureConfirmPassword),
                 ),
+              ),
+            ),
+            const SizedBox(height: 16),
+            TextField(
+              controller: _nicknameController,
+              decoration: const InputDecoration(
+                labelText: '昵称（选填）',
+                hintText: '请输入昵称',
+                prefixIcon: Icon(Icons.person_outline),
               ),
             ),
             const SizedBox(height: 32),
@@ -197,6 +208,7 @@ class _RegisterPageState extends State<RegisterPage> {
     _phoneController.dispose();
     _passwordController.dispose();
     _confirmPasswordController.dispose();
+    _nicknameController.dispose();
     super.dispose();
   }
 }
