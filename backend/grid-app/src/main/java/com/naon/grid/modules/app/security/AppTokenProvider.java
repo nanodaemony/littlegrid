@@ -44,7 +44,7 @@ public class AppTokenProvider implements InitializingBean {
                 .build();
     }
 
-    public String createToken(Long userId, String username, String deviceId) {
+    public String createToken(Long userId, String deviceId) {
         Map<String, Object> claims = new HashMap<>();
         claims.put(AUTHORITIES_UID_KEY, userId);
         claims.put(DEVICE_ID_KEY, deviceId);
@@ -53,7 +53,7 @@ public class AppTokenProvider implements InitializingBean {
 
         return Jwts.builder()
                 .setClaims(claims)
-                .setSubject(username)
+                .setSubject(String.valueOf(userId))
                 .setIssuedAt(new Date())
                 .signWith(signingKey, SignatureAlgorithm.HS512)
                 .compact();
