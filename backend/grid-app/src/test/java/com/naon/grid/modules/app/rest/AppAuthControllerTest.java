@@ -27,11 +27,9 @@ public class AppAuthControllerTest {
     @Test
     void testRegister() throws Exception {
         String timestamp = String.valueOf(System.currentTimeMillis());
-        String username = "test" + timestamp.substring(7);
         String phone = "138" + timestamp.substring(5);
 
         RegisterDTO registerDTO = new RegisterDTO();
-        registerDTO.setUsername(username);
         registerDTO.setPassword("encrypted_password");
         registerDTO.setPhone(phone);
         registerDTO.setDeviceId("test-device-001");
