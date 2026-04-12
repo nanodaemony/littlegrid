@@ -6,6 +6,8 @@ import com.naon.grid.modules.app.service.AppAuthService;
 import com.naon.grid.modules.app.service.dto.LoginDTO;
 import com.naon.grid.modules.app.service.dto.RegisterDTO;
 import com.naon.grid.modules.app.service.dto.TokenDTO;
+import com.naon.grid.modules.app.service.dto.UpdateUserDTO;
+import com.naon.grid.modules.app.service.dto.AppUserDTO;
 import com.naon.grid.utils.SecurityUtils;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -49,5 +51,14 @@ public class AppAuthController {
         Long userId = SecurityUtils.getCurrentUserId();
         appAuthService.logout(userId, deviceId);
         return ResponseEntity.ok().build();
+    }
+
+    @Log("APP用户更新信息")
+    @ApiOperation("更新用户信息")
+    @PostMapping("/user/update")
+    public ResponseEntity<AppUserDTO> updateUser(@Validated @RequestBody UpdateUserDTO updateUserDTO) {
+        Long userId = SecurityUtils.getCurrentUserId();
+        AppUserDTO userDTO = appAuthService.updateUser(userId, updateUserDTO);
+        return ResponseEntity.ok(userDTO);
     }
 }
