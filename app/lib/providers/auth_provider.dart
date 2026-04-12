@@ -50,13 +50,13 @@ class AuthProvider extends ChangeNotifier {
   }
 
   /// Phone registration
-  Future<bool> register(String phone, String password, String deviceId) async {
+  Future<bool> register(String phone, String password, String deviceId, {String? nickname}) async {
     _isLoading = true;
     notifyListeners();
 
     try {
       developer.log('AuthProvider: Starting registration for phone=$phone, deviceId=$deviceId', name: 'AuthProvider');
-      final result = await AuthService.register(phone, password, deviceId);
+      final result = await AuthService.register(phone, password, deviceId, nickname: nickname);
       _currentUser = result.user;
       _isLoggedIn = true;
       _isLoading = false;
