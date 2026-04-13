@@ -222,14 +222,6 @@ class _AppDrawerState extends State<AppDrawer> {
                     color: Colors.white,
                   ),
                 ),
-                const SizedBox(height: 8),
-                Text(
-                  '已使用 4 个工具',
-                  style: TextStyle(
-                    fontSize: 14,
-                    color: Colors.white.withAlpha((0.7 * 255).round()),
-                  ),
-                ),
               ],
             ),
           ),
