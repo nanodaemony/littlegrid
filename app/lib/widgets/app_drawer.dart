@@ -211,10 +211,7 @@ class _AppDrawerState extends State<AppDrawer> {
             child: Column(
               children: [
                 // Avatar
-                GestureDetector(
-                  onTap: _onAvatarTap,
-                  child: _buildAvatar(provider.avatarPath),
-                ),
+                _buildAvatar(provider.avatarPath),
                 const SizedBox(height: 16),
                 // Nickname
                 GestureDetector(
