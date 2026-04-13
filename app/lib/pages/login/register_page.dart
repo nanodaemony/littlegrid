@@ -112,7 +112,8 @@ class _RegisterPageState extends State<RegisterPage> {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('注册成功')),
       );
-      Navigator.of(context).pop();
+      // 直接返回到首页，跳过登录页
+      Navigator.of(context).popUntil((route) => route.isFirst);
     } catch (e) {
       _showError(e.toString().replaceAll('Exception: ', ''));
     } finally {
