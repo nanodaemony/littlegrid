@@ -213,16 +213,6 @@ class _AppDrawerState extends State<AppDrawer> {
               children: [
                 // Avatar
                 _buildAvatar(provider.avatarPath),
-                const SizedBox(height: 16),
-                // Nickname
-                Text(
-                  _nickname,
-                  style: const TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white,
-                  ),
-                ),
               ],
             ),
           ),
