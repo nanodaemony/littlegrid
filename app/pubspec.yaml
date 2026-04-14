@@ -49,6 +49,8 @@ dependencies:
 
   # 数学表达式计算
   math_expressions: ^2.6.0
+  # Vector math
+  vector_math: ^2.1.4
 
   # 农历
   lunar: ^1.7.8
