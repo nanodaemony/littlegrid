@@ -103,4 +103,22 @@ class StorageService {
   static Future<String?> getAvatarPath() async {
     return getSetting(_avatarPathKey);
   }
+
+  // 通用字符串存储方法
+  static Future<void> setString(String key, String value) async {
+    await setSetting(key, value, 'string');
+  }
+
+  static Future<String?> getString(String key) async {
+    return getSetting(key);
+  }
+
+  static Future<void> remove(String key) async {
+    final db = await DatabaseService.database;
+    await db.delete(
+      'user_settings',
+      where: 'key = ?',
+      whereArgs: [key],
+    );
+  }
 }
