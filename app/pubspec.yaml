@@ -95,6 +95,9 @@ dependencies:
   # 设备信息
   device_info_plus: ^9.0.0
 
+  # 传感器（用于摇晃检测）
+  sensors_plus: ^4.0.2
+
 dev_dependencies:
   flutter_test:
     sdk: flutter

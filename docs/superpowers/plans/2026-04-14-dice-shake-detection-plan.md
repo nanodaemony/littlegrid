@@ -1,3 +1,228 @@
+# 骰子摇晃检测功能实现计划
+
+> **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
+
+**Goal:** 为骰子页面添加摇晃手机触发掷骰子的功能，保留原有的按钮触发方式。
+
+**Architecture:** 在 `_DicePageState` 中直接集成 `sensors_plus` 加速度传感器监听，检测摇晃动作并触发 `_rollDice()`。
+
+**Tech Stack:** Flutter, sensors_plus, dart:async, dart:math
+
+---
+
+## 文件结构
+
+| 文件 | 操作 | 说明 |
+|------|------|------|
+| `app/pubspec.yaml` | 已修改 | 已添加 `sensors_plus: ^4.0.2` |
+| `app/lib/tools/dice/dice_page.dart` | 修改 | 添加摇晃检测逻辑 |
+
+---
+
+### Task 1: 确认 pubspec.yaml 依赖并运行 flutter pub get
+
+**Files:**
+- Verify: `app/pubspec.yaml`
+
+- [ ] **Step 1: 确认 sensors_plus 依赖已添加**
+
+检查 `app/pubspec.yaml` 包含:
+```yaml
+  # 传感器（用于摇晃检测）
+  sensors_plus: ^4.0.2
+```
+
+- [ ] **Step 2: 运行 flutter pub get**
+
+Run:
+```bash
+cd /home/nano/little-grid2/app
+flutter pub get
+```
+
+Expected: 依赖安装成功，无错误
+
+---
+
+### Task 2: 修改 dice_page.dart 添加导入和状态变量
+
+**Files:**
+- Modify: `app/lib/tools/dice/dice_page.dart`
+
+- [ ] **Step 1: 添加 sensors_plus 导入**
+
+在文件顶部添加:
+```dart
+import 'package:sensors_plus/sensors_plus.dart';
+```
+
+最终导入部分应为:
+```dart
+import 'dart:async';
+import 'dart:math';
+import 'package:flutter/material.dart';
+import 'package:flutter_animate/flutter_animate.dart';
+import 'package:sensors_plus/sensors_plus.dart';
+```
+
+- [ ] **Step 2: 添加状态变量**
+
+在 `_DicePageState` 类中，在现有变量后添加:
+```dart
+  StreamSubscription<UserAccelerometerEvent>? _accelerometerSubscription;
+  DateTime? _lastShakeTime;
+  double? _lastX, _lastY, _lastZ;
+  static const double _shakeThreshold = 15.0;
+  static const Duration _shakeCooldown = Duration(seconds: 1);
+```
+
+完整变量列表:
+```dart
+  final Random _random = Random();
+  List<int> _diceValues = [1];
+  int _diceCount = 1;
+  bool _isRolling = false;
+  Timer? _rollTimer;
+  StreamSubscription<UserAccelerometerEvent>? _accelerometerSubscription;
+  DateTime? _lastShakeTime;
+  double? _lastX, _lastY, _lastZ;
+  static const double _shakeThreshold = 15.0;
+  static const Duration _shakeCooldown = Duration(seconds: 1);
+```
+
+---
+
+### Task 3: 添加 initState 传感器初始化逻辑
+
+**Files:**
+- Modify: `app/lib/tools/dice/dice_page.dart`
+
+- [ ] **Step 1: 添加 initState 方法**
+
+在 `dispose()` 方法之前添加:
+```dart
+  @override
+  void initState() {
+    super.initState();
+    _startListeningToAccelerometer();
+  }
+```
+
+- [ ] **Step 2: 添加 _startListeningToAccelerometer 方法**
+
+在 `_rollDice()` 方法之后添加:
+```dart
+  void _startListeningToAccelerometer() {
+    _accelerometerSubscription = userAccelerometerEventStream.listen(
+      _onAccelerometerEvent,
+      onError: (error) {
+        // 忽略传感器错误
+      },
+      cancelOnError: false,
+    );
+  }
+
+  void _onAccelerometerEvent(UserAccelerometerEvent event) {
+    if (_lastX == null || _lastY == null || _lastZ == null) {
+      _lastX = event.x;
+      _lastY = event.y;
+      _lastZ = event.z;
+      return;
+    }
+
+    final dx = event.x - _lastX!;
+    final dy = event.y - _lastY!;
+    final dz = event.z - _lastZ!;
+
+    final acceleration = sqrt(dx * dx + dy * dy + dz * dz);
+
+    if (acceleration > _shakeThreshold) {
+      final now = DateTime.now();
+      if (_lastShakeTime == null ||
+          now.difference(_lastShakeTime!) > _shakeCooldown) {
+        _lastShakeTime = now;
+        _rollDice();
+      }
+    }
+
+    _lastX = event.x;
+    _lastY = event.y;
+    _lastZ = event.z;
+  }
+```
+
+---
+
+### Task 4: 更新 dispose 方法清理资源
+
+**Files:**
+- Modify: `app/lib/tools/dice/dice_page.dart`
+
+- [ ] **Step 1: 更新 dispose 方法**
+
+修改 `dispose()` 方法，添加传感器订阅取消:
+```dart
+  @override
+  void dispose() {
+    _rollTimer?.cancel();
+    _accelerometerSubscription?.cancel();
+    super.dispose();
+  }
+```
+
+---
+
+### Task 5: 验证完整代码并测试
+
+**Files:**
+- Verify: `app/lib/tools/dice/dice_page.dart`
+
+- [ ] **Step 1: 确认完整代码结构**
+
+完整的 `_DicePageState` 应包含:
+1. 导入语句（含 sensors_plus）
+2. 所有状态变量
+3. initState 方法
+4. dispose 方法
+5. _rollDice 方法
+6. _startListeningToAccelerometer 方法
+7. _onAccelerometerEvent 方法
+8. build 方法
+
+- [ ] **Step 2: 运行 flutter analyze 检查错误**
+
+Run:
+```bash
+cd /home/nano/little-grid2/app
+flutter analyze lib/tools/dice/dice_page.dart
+```
+
+Expected: 无错误，无警告
+
+- [ ] **Step 3: 提交更改**
+
+```bash
+cd /home/nano/little-grid2
+git add app/pubspec.yaml app/lib/tools/dice/dice_page.dart docs/superpowers/specs/2026-04-14-dice-shake-detection-design.md docs/superpowers/plans/2026-04-14-dice-shake-detection-plan.md
+git commit -m "feat: add shake detection for dice tool
+
+- Add sensors_plus dependency
+- Implement shake detection in DicePage
+- 15 m/s² threshold with 1 second cooldown
+- Clean up sensor subscription on dispose
+
+Generated with [Claude Code](https://claude.ai/code)
+via [Happy](https://happy.engineering)
+
+Co-Authored-By: Claude <noreply@anthropic.com>
+Co-Authored-By: Happy <yesreply@happy.engineering>"
+```
+
+---
+
+## 完整修改后的 dice_page.dart 参考
+
+```dart
 import 'dart:async';
 import 'dart:math';
 import 'package:flutter/material.dart';
@@ -324,3 +549,4 @@ class _DiceWidget extends StatelessWidget {
     }
   }
 }
+```
