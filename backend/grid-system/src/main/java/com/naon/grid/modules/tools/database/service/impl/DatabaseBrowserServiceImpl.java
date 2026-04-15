@@ -19,11 +19,17 @@ public class DatabaseBrowserServiceImpl implements DatabaseBrowserService {
 
     private final DataSource dataSource;
 
-    private static final Set<String> SENSITIVE_TABLES = Set.of(
-        "sys_user", "sys_role", "sys_menu",
-        "sys_dept", "sys_permission",
-        "mnt_database"
-    );
+    private static final Set<String> SENSITIVE_TABLES;
+    static {
+        Set<String> tables = new HashSet<>();
+        tables.add("sys_user");
+        tables.add("sys_role");
+        tables.add("sys_menu");
+        tables.add("sys_dept");
+        tables.add("sys_permission");
+        tables.add("mnt_database");
+        SENSITIVE_TABLES = Collections.unmodifiableSet(tables);
+    }
 
     @Override
     public List<TableInfo> getAllTables() {

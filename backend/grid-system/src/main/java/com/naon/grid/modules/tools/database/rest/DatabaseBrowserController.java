@@ -32,6 +32,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -108,7 +109,9 @@ public class DatabaseBrowserController {
     @GetMapping("/tables/{tableName}/sensitive")
     @PreAuthorize("@el.check('databaseBrowser:list')")
     public ResponseEntity<Map<String, Boolean>> isSensitiveTable(@PathVariable String tableName) {
-        return new ResponseEntity<>(Map.of("sensitive", databaseBrowserService.isSensitiveTable(tableName)), HttpStatus.OK);
+        Map<String, Boolean> result = new HashMap<>();
+        result.put("sensitive", databaseBrowserService.isSensitiveTable(tableName));
+        return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
     @Data
