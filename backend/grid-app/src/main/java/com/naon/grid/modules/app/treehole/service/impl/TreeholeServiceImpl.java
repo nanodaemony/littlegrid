@@ -97,7 +97,7 @@ public class TreeholeServiceImpl implements TreeholeService {
                     return toPostDTO(post, replyCount);
                 })
                 .collect(Collectors.toList());
-        return PageUtil.toPage(postPage, dtoList);
+        return PageUtil.toPage(dtoList, postPage.getTotalElements());
     }
 
     @Override
