@@ -2,6 +2,9 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../core/ui/app_colors.dart';
+import '../core/models/card_background.dart';
+import '../core/constants/card_theme_constants.dart';
+import 'card_background_container.dart';
 import '../pages/settings_page.dart';
 import '../providers/app_provider.dart';
 import 'avatar_picker.dart';
@@ -198,22 +201,19 @@ class _AppDrawerState extends State<AppDrawer> {
   Widget _buildHeader() {
     return Consumer<AppProvider>(
       builder: (context, provider, child) {
-        return Container(
-          width: double.infinity,
-          padding: const EdgeInsets.all(24),
-          decoration: const BoxDecoration(
-            gradient: LinearGradient(
-              colors: [AppColors.primary, AppColors.primaryDark],
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-            ),
-          ),
-          child: SafeArea(
-            child: Column(
-              children: [
-                // Avatar
-                _buildAvatar(provider.avatarPath),
-              ],
+        return CardBackgroundContainer(
+          background: provider.cardBackground,
+          borderRadius: BorderRadius.zero,
+          child: Container(
+            width: double.infinity,
+            padding: const EdgeInsets.all(24),
+            child: SafeArea(
+              child: Column(
+                children: [
+                  // Avatar
+                  _buildAvatar(provider.avatarPath),
+                ],
+              ),
             ),
           ),
         );
