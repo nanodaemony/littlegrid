@@ -3,6 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../core/ui/app_colors.dart';
 import '../models/user.dart';
+import '../core/models/card_background.dart';
+import '../core/constants/card_theme_constants.dart';
+import '../widgets/card_background_container.dart';
 import '../providers/app_provider.dart';
 import '../providers/auth_provider.dart';
 import '../widgets/avatar_picker.dart';
@@ -137,37 +140,25 @@ class _ProfilePageState extends State<ProfilePage> {
             final isLoggedIn = authProvider.isLoggedIn;
             final user = authProvider.currentUser;
 
-            return Container(
-              margin: const EdgeInsets.all(16),
-              padding: const EdgeInsets.all(24),
-              decoration: BoxDecoration(
-                gradient: const LinearGradient(
-                  colors: [AppColors.primary, AppColors.primaryDark],
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
+            return CardBackgroundContainer(
+              background: appProvider.cardBackground,
+              child: Container(
+                margin: const EdgeInsets.all(16),
+                padding: const EdgeInsets.all(24),
+                child: Column(
+                  children: [
+                    // 头像
+                    _buildAvatar(appProvider.avatarPath),
+
+                    const SizedBox(height: 16),
+
+                    // 昵称或登录按钮
+                    if (isLoggedIn && user != null)
+                      _buildLoggedInUser(user)
+                    else
+                      _buildLoginButton(),
+                  ],
                 ),
-                borderRadius: BorderRadius.circular(16),
-                boxShadow: [
-                  BoxShadow(
-                    color: AppColors.primary.withAlpha((0.3 * 255).round()),
-                    blurRadius: 12,
-                    offset: const Offset(0, 6),
-                  ),
-                ],
-              ),
-              child: Column(
-                children: [
-                  // 头像
-                  _buildAvatar(appProvider.avatarPath),
-
-                  const SizedBox(height: 16),
-
-                  // 昵称或登录按钮
-                  if (isLoggedIn && user != null)
-                    _buildLoggedInUser(user)
-                  else
-                    _buildLoginButton(),
-                ],
               ),
             );
           },
@@ -184,7 +175,6 @@ class _ProfilePageState extends State<ProfilePage> {
           style: const TextStyle(
             fontSize: 20,
             fontWeight: FontWeight.bold,
-            color: Colors.white,
           ),
         ),
       ],
