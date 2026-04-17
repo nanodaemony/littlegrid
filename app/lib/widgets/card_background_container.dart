@@ -7,6 +7,8 @@ class CardBackgroundContainer extends StatelessWidget {
   final CardBackground background;
   final BorderRadius? borderRadius;
   final bool useLightText; // 强制使用浅色文字
+  final EdgeInsetsGeometry? margin; // 外边距
+  final EdgeInsetsGeometry? padding; // 内边距
 
   const CardBackgroundContainer({
     super.key,
@@ -14,6 +16,8 @@ class CardBackgroundContainer extends StatelessWidget {
     required this.background,
     this.borderRadius,
     this.useLightText = true,
+    this.margin,
+    this.padding,
   });
 
   @override
@@ -22,6 +26,8 @@ class CardBackgroundContainer extends StatelessWidget {
     final needsDarkText = _needsDarkText();
 
     return Container(
+      margin: margin,
+      padding: padding,
       decoration: decoration,
       child: DefaultTextStyle(
         style: TextStyle(

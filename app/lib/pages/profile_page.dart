@@ -3,8 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../core/ui/app_colors.dart';
 import '../models/user.dart';
-import '../core/models/card_background.dart';
-import '../core/constants/card_theme_constants.dart';
 import '../widgets/card_background_container.dart';
 import '../providers/app_provider.dart';
 import '../providers/auth_provider.dart';
@@ -142,23 +140,21 @@ class _ProfilePageState extends State<ProfilePage> {
 
             return CardBackgroundContainer(
               background: appProvider.cardBackground,
-              child: Container(
-                margin: const EdgeInsets.all(16),
-                padding: const EdgeInsets.all(24),
-                child: Column(
-                  children: [
-                    // 头像
-                    _buildAvatar(appProvider.avatarPath),
+              margin: const EdgeInsets.all(16),
+              padding: const EdgeInsets.all(24),
+              child: Column(
+                children: [
+                  // 头像
+                  _buildAvatar(appProvider.avatarPath),
 
-                    const SizedBox(height: 16),
+                  const SizedBox(height: 16),
 
-                    // 昵称或登录按钮
-                    if (isLoggedIn && user != null)
-                      _buildLoggedInUser(user)
-                    else
-                      _buildLoginButton(),
-                  ],
-                ),
+                  // 昵称或登录按钮
+                  if (isLoggedIn && user != null)
+                    _buildLoggedInUser(user)
+                  else
+                    _buildLoginButton(),
+                ],
               ),
             );
           },
