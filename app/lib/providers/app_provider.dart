@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import '../core/models/tool_config.dart';
+import '../core/models/card_background.dart';
+import '../core/constants/card_theme_constants.dart';
 import '../core/services/storage_service.dart';
 import '../core/services/tool_registry.dart';
 import '../core/utils/logger.dart';
@@ -8,15 +10,20 @@ class AppProvider extends ChangeNotifier {
   List<ToolConfig> _toolConfigs = [];
   bool _isLoading = true;
   String? _avatarPath;
+  CardBackground _cardBackground = CardThemeConstants.defaultBackground;
+  CardBackground? _previewBackground;
 
   List<ToolConfig> get toolConfigs => _toolConfigs;
   bool get isLoading => _isLoading;
   String? get avatarPath => _avatarPath;
+  CardBackground get cardBackground => _cardBackground;
+  CardBackground? get previewBackground => _previewBackground;
 
   /// 初始化
   Future<void> init() async {
     await initTools();
     await loadAvatar();
+    await loadCardBackground();
   }
 
   /// 初始化工具配置
@@ -78,6 +85,37 @@ class AppProvider extends ChangeNotifier {
       notifyListeners();
     } catch (e, stack) {
       AppLogger.e('Failed to update avatar', error: e, stackTrace: stack);
+    }
+  }
+
+  /// 加载卡片背景
+  Future<void> loadCardBackground() async {
+    try {
+      final saved = await StorageService.getCardBackground();
+      if (saved != null) {
+        _cardBackground = saved;
+        notifyListeners();
+      }
+    } catch (e, stack) {
+      AppLogger.e('Failed to load card background', error: e, stackTrace: stack);
+    }
+  }
+
+  /// 设置预览背景（不保存）
+  void setPreviewBackground(CardBackground? background) {
+    _previewBackground = background;
+    notifyListeners();
+  }
+
+  /// 保存卡片背景
+  Future<void> saveCardBackground(CardBackground background) async {
+    try {
+      await StorageService.saveCardBackground(background);
+      _cardBackground = background;
+      _previewBackground = null;
+      notifyListeners();
+    } catch (e, stack) {
+      AppLogger.e('Failed to save card background', error: e, stackTrace: stack);
     }
   }
 
