@@ -44,10 +44,10 @@ class CardThemeConstants {
 
   // 实景图片背景（4种，资源文件）
   static const List<String> imageAssets = [
-    'assets/images/card_themes/mountain.jpg',
-    'assets/images/card_themes/ocean.jpg',
-    'assets/images/card_themes/starry.jpg',
-    'assets/images/card_themes/forest.jpg',
+    'assets/images/card_themes/spring.png',
+    'assets/images/card_themes/summer.png',
+    'assets/images/card_themes/autumn.png',
+    'assets/images/card_themes/winter.png',
   ];
 
   // 获取所有纯色选项

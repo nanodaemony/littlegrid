@@ -250,17 +250,23 @@ class _ThemePageState extends State<ThemePage> {
     if (bg.type == CardBackgroundType.image) {
       return ClipRRect(
         borderRadius: BorderRadius.circular(12),
-        child: Container(
-          decoration: BoxDecoration(
-            color: Colors.grey[300],
-          ),
-          child: Center(
-            child: Icon(
-              Icons.image,
-              color: Colors.grey[600],
-              size: 32,
-            ),
-          ),
+        child: Image.asset(
+          bg.assetPath!,
+          fit: BoxFit.cover,
+          errorBuilder: (context, error, stackTrace) {
+            return Container(
+              decoration: BoxDecoration(
+                color: Colors.grey[300],
+              ),
+              child: Center(
+                child: Icon(
+                  Icons.image,
+                  color: Colors.grey[600],
+                  size: 32,
+                ),
+              ),
+            );
+          },
         ),
       );
     }
