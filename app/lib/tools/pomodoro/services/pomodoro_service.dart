@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:vibration/vibration.dart';
 import 'package:audioplayers/audioplayers.dart';
+import '../../../core/services/notification_service.dart';
+import '../../../core/services/in_app_banner_service.dart';
 import '../models/pomodoro_state.dart';
 import '../models/pomodoro_settings.dart';
 import '../models/pomodoro_record.dart';
@@ -13,6 +15,7 @@ class PomodoroService extends ChangeNotifier {
   PomodoroSettings _settings = const PomodoroSettings();
   Timer? _timer;
   DateTime? _startedAt;
+  DateTime? _endTime;
   final PomodoroStatsService _statsService = PomodoroStatsService();
   final AudioPlayer _audioPlayer = AudioPlayer();
 
@@ -45,9 +48,10 @@ class PomodoroService extends ChangeNotifier {
   }
 
   // 开始番茄计时
-  void startWork() {
+  Future<void> startWork() async {
     _startedAt = DateTime.now();
     final duration = _settings.workDuration * 60;
+    _endTime = _startedAt!.add(Duration(seconds: duration));
 
     _state = _state.copyWith(
       status: PomodoroStatus.running,
@@ -58,15 +62,17 @@ class PomodoroService extends ChangeNotifier {
     );
     notifyListeners();
 
+    await _scheduleNotification();
     _startTimer();
   }
 
   // 开始休息
-  void startBreak({bool isLong = false}) {
+  Future<void> startBreak({bool isLong = false}) async {
     _startedAt = DateTime.now();
     final duration = isLong
         ? _settings.longBreakDuration * 60
         : _settings.shortBreakDuration * 60;
+    _endTime = _startedAt!.add(Duration(seconds: duration));
 
     _state = _state.copyWith(
       status: PomodoroStatus.breakRunning,
@@ -77,6 +83,7 @@ class PomodoroService extends ChangeNotifier {
     );
     notifyListeners();
 
+    await _scheduleNotification();
     _startTimer();
   }
 
@@ -104,6 +111,7 @@ class PomodoroService extends ChangeNotifier {
         remainingSeconds: 0,
       );
       notifyListeners();
+      _showInAppBanner();
       _notifyUser();
       _handleBreakComplete();
     } else {
@@ -113,6 +121,7 @@ class PomodoroService extends ChangeNotifier {
         remainingSeconds: 0,
       );
       notifyListeners();
+      _showInAppBanner();
       _notifyUser();
       _handleWorkComplete();
     }
@@ -180,13 +189,14 @@ class PomodoroService extends ChangeNotifier {
   }
 
   // 暂停
-  void pause() {
+  Future<void> pause() async {
     if (_state.status != PomodoroStatus.running &&
         _state.status != PomodoroStatus.breakRunning) return;
 
     _timer?.cancel();
     _state = _state.copyWith(status: PomodoroStatus.paused);
     notifyListeners();
+    await _cancelNotifications();
   }
 
   // 继续
@@ -203,11 +213,13 @@ class PomodoroService extends ChangeNotifier {
   }
 
   // 重置
-  void reset() {
+  Future<void> reset() async {
     _timer?.cancel();
     _state = const PomodoroState();
     _startedAt = null;
-    _loadTodayCount();
+    _endTime = null;
+    await _cancelNotifications();
+    await _loadTodayCount();
     notifyListeners();
   }
 
@@ -229,5 +241,49 @@ class PomodoroService extends ChangeNotifier {
     _timer?.cancel();
     _audioPlayer.dispose();
     super.dispose();
+  }
+
+  /// Schedule notification for timer end
+  Future<void> _scheduleNotification() async {
+    if (_endTime == null) return;
+
+    final notificationService = NotificationService();
+
+    // Cancel any existing notifications for this session
+    await notificationService.cancel(1000);
+    await notificationService.cancel(1001);
+
+    // Schedule based on current mode
+    final id = !_state.isBreak ? 1000 : 1001;
+    await notificationService.showPomodoroNotification(
+      id: id,
+      isWorkFinished: !_state.isBreak,
+      scheduledDate: _endTime!,
+    );
+  }
+
+  /// Cancel scheduled notifications
+  Future<void> _cancelNotifications() async {
+    final notificationService = NotificationService();
+    await notificationService.cancel(1000);
+    await notificationService.cancel(1001);
+  }
+
+  /// Show in-app banner when timer ends
+  void _showInAppBanner() {
+    final bannerService = InAppBannerService();
+
+    final title = !_state.isBreak ? '番茄钟结束' : '休息结束';
+    final body = !_state.isBreak ? '休息一下吧，喝杯水~' : '开始新的专注吧！';
+    final icon = !_state.isBreak ? Icons.timer : Icons.play_circle;
+    final color = !_state.isBreak ? const Color(0xFF22C55E) : const Color(0xFF3B82F6);
+
+    bannerService.show(
+      title: title,
+      body: body,
+      icon: icon,
+      iconBackgroundColor: color,
+      toolId: 'pomodoro',
+    );
   }
 }

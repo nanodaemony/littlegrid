@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:provider/provider.dart';
+import 'core/services/banner_queue.dart';
 import 'core/services/debug_log_service.dart';
+import 'core/services/in_app_banner_service.dart';
 import 'core/services/tool_registry.dart';
 import 'core/ui/theme.dart';
+import 'core/widgets/in_app_banner.dart';
 import 'pages/debug_page.dart';
 import 'pages/grid_page.dart';
 import 'pages/profile_page.dart';
@@ -96,6 +99,7 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => PomodoroService()..loadSettings()),
         ChangeNotifierProvider(create: (_) => AuthProvider()),
         ChangeNotifierProvider(create: (_) => BookshelfProvider()),
+        ChangeNotifierProvider(create: (_) => BannerQueue()),
         ChangeNotifierProvider(create: (_) => DebugLogService()),
       ],
       child: const AppWrapper(),
@@ -137,6 +141,14 @@ class _AppWrapperState extends State<AppWrapper> {
         Locale('zh', 'CN'),
         Locale('en', 'US'),
       ],
+      builder: (context, child) {
+        return Stack(
+          children: [
+            child!,
+            const InAppBannerOverlay(),
+          ],
+        );
+      },
       home: const MainPage(),
     );
   }
@@ -165,6 +177,10 @@ class _MainPageState extends State<MainPage> {
     // 初始化应用状态（工具配置 + 头像）
     WidgetsBinding.instance.addPostFrameCallback((_) {
       context.read<AppProvider>().init();
+
+      // Initialize banner service
+      final bannerQueue = context.read<BannerQueue>();
+      InAppBannerService().initialize(bannerQueue);
     });
   }
 
