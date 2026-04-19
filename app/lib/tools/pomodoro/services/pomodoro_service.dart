@@ -48,7 +48,7 @@ class PomodoroService extends ChangeNotifier {
   }
 
   // 开始番茄计时
-  Future<void> startWork() async {
+  void startWork() {
     _startedAt = DateTime.now();
     final duration = _settings.workDuration * 60;
     _endTime = _startedAt!.add(Duration(seconds: duration));
@@ -62,12 +62,12 @@ class PomodoroService extends ChangeNotifier {
     );
     notifyListeners();
 
-    await _scheduleNotification();
+    _scheduleNotification();
     _startTimer();
   }
 
   // 开始休息
-  Future<void> startBreak({bool isLong = false}) async {
+  void startBreak({bool isLong = false}) {
     _startedAt = DateTime.now();
     final duration = isLong
         ? _settings.longBreakDuration * 60
@@ -83,7 +83,7 @@ class PomodoroService extends ChangeNotifier {
     );
     notifyListeners();
 
-    await _scheduleNotification();
+    _scheduleNotification();
     _startTimer();
   }
 
@@ -189,14 +189,14 @@ class PomodoroService extends ChangeNotifier {
   }
 
   // 暂停
-  Future<void> pause() async {
+  void pause() {
     if (_state.status != PomodoroStatus.running &&
         _state.status != PomodoroStatus.breakRunning) return;
 
     _timer?.cancel();
     _state = _state.copyWith(status: PomodoroStatus.paused);
     notifyListeners();
-    await _cancelNotifications();
+    _cancelNotifications();
   }
 
   // 继续
@@ -213,13 +213,13 @@ class PomodoroService extends ChangeNotifier {
   }
 
   // 重置
-  Future<void> reset() async {
+  void reset() {
     _timer?.cancel();
     _state = const PomodoroState();
     _startedAt = null;
     _endTime = null;
-    await _cancelNotifications();
-    await _loadTodayCount();
+    _cancelNotifications();
+    _loadTodayCount();
     notifyListeners();
   }
 
@@ -244,29 +244,37 @@ class PomodoroService extends ChangeNotifier {
   }
 
   /// Schedule notification for timer end
-  Future<void> _scheduleNotification() async {
+  void _scheduleNotification() {
     if (_endTime == null) return;
 
-    final notificationService = NotificationService();
+    // Schedule without waiting
+    () async {
+      final notificationService = NotificationService();
+      await notificationService.initialize();
 
-    // Cancel any existing notifications for this session
-    await notificationService.cancel(1000);
-    await notificationService.cancel(1001);
+      // Cancel any existing notifications for this session
+      await notificationService.cancel(1000);
+      await notificationService.cancel(1001);
 
-    // Schedule based on current mode
-    final id = !_state.isBreak ? 1000 : 1001;
-    await notificationService.showPomodoroNotification(
-      id: id,
-      isWorkFinished: !_state.isBreak,
-      scheduledDate: _endTime!,
-    );
+      // Schedule based on current mode
+      final id = !_state.isBreak ? 1000 : 1001;
+      await notificationService.showPomodoroNotification(
+        id: id,
+        isWorkFinished: !_state.isBreak,
+        scheduledDate: _endTime!,
+      );
+    }();
   }
 
   /// Cancel scheduled notifications
-  Future<void> _cancelNotifications() async {
-    final notificationService = NotificationService();
-    await notificationService.cancel(1000);
-    await notificationService.cancel(1001);
+  void _cancelNotifications() {
+    // Cancel without waiting
+    () async {
+      final notificationService = NotificationService();
+      await notificationService.initialize();
+      await notificationService.cancel(1000);
+      await notificationService.cancel(1001);
+    }();
   }
 
   /// Show in-app banner when timer ends
