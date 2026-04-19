@@ -1,6 +1,5 @@
 package com.naon.grid.modules.app.treehole.rest;
 
-import com.naon.grid.annotation.Log;
 import com.naon.grid.modules.app.security.AppTokenProvider;
 import com.naon.grid.modules.app.treehole.service.TreeholeService;
 import com.naon.grid.modules.app.treehole.service.dto.*;
@@ -30,7 +29,6 @@ public class TreeholeController {
     private final AppTokenProvider appTokenProvider;
     private final SecurityProperties securityProperties;
 
-    @Log("发布树洞")
     @ApiOperation("发布树洞")
     @PostMapping("/posts")
     public ResponseEntity<PostDTO> createPost(
@@ -41,7 +39,6 @@ public class TreeholeController {
         return ResponseEntity.ok(post);
     }
 
-    @Log("随机获取树洞")
     @ApiOperation("随机获取一条树洞")
     @GetMapping("/posts/random")
     public ResponseEntity<PostDTO> getRandomPost(
@@ -55,7 +52,6 @@ public class TreeholeController {
         return ResponseEntity.ok(post);
     }
 
-    @Log("获取我的树洞")
     @ApiOperation("获取我的树洞列表")
     @GetMapping("/posts/mine")
     public ResponseEntity<PageResult<PostDTO>> getMyPosts(
@@ -68,7 +64,6 @@ public class TreeholeController {
         return ResponseEntity.ok(result);
     }
 
-    @Log("获取树洞详情")
     @ApiOperation("获取树洞详情(含回复)")
     @GetMapping("/posts/{id}")
     public ResponseEntity<PostDetailDTO> getPostDetail(
@@ -79,7 +74,6 @@ public class TreeholeController {
         return ResponseEntity.ok(detail);
     }
 
-    @Log("删除树洞")
     @ApiOperation("删除我的树洞")
     @DeleteMapping("/posts/{id}")
     public ResponseEntity<Void> deletePost(
@@ -90,7 +84,6 @@ public class TreeholeController {
         return ResponseEntity.ok().build();
     }
 
-    @Log("发表回复")
     @ApiOperation("发表回复")
     @PostMapping("/posts/{id}/replies")
     public ResponseEntity<ReplyDTO> createReply(
@@ -102,7 +95,6 @@ public class TreeholeController {
         return ResponseEntity.ok(reply);
     }
 
-    @Log("点赞回复")
     @ApiOperation("点赞回复")
     @PostMapping("/replies/{id}/like")
     public ResponseEntity<TreeholeService.LikeResultDTO> likeReply(
@@ -113,7 +105,6 @@ public class TreeholeController {
         return ResponseEntity.ok(result);
     }
 
-    @Log("取消点赞")
     @ApiOperation("取消点赞")
     @DeleteMapping("/replies/{id}/like")
     public ResponseEntity<TreeholeService.LikeResultDTO> unlikeReply(

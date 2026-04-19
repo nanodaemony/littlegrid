@@ -18,7 +18,6 @@ package com.naon.grid.modules.system.rest;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
-import com.naon.grid.annotation.Log;
 import com.naon.grid.exception.BadRequestException;
 import com.naon.grid.modules.system.domain.Job;
 import com.naon.grid.modules.system.service.JobService;
@@ -62,7 +61,6 @@ public class JobController {
         return new ResponseEntity<>(jobService.queryAll(criteria, pageable),HttpStatus.OK);
     }
 
-    @Log("新增岗位")
     @ApiOperation("新增岗位")
     @PostMapping
     @PreAuthorize("@el.check('job:add')")
@@ -74,7 +72,6 @@ public class JobController {
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
-    @Log("修改岗位")
     @ApiOperation("修改岗位")
     @PutMapping
     @PreAuthorize("@el.check('job:edit')")
@@ -83,7 +80,6 @@ public class JobController {
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
-    @Log("删除岗位")
     @ApiOperation("删除岗位")
     @DeleteMapping
     @PreAuthorize("@el.check('job:del')")

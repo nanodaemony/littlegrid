@@ -19,7 +19,6 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import com.naon.grid.annotation.Log;
 import com.naon.grid.exception.BadRequestException;
 import com.naon.grid.modules.quartz.domain.QuartzJob;
 import com.naon.grid.modules.quartz.domain.QuartzLog;
@@ -79,7 +78,6 @@ public class QuartzJobController {
         return new ResponseEntity<>(quartzJobService.queryAllLog(criteria,pageable), HttpStatus.OK);
     }
 
-    @Log("新增定时任务")
     @ApiOperation("新增定时任务")
     @PostMapping
     @PreAuthorize("@el.check('timing:add')")
@@ -93,7 +91,6 @@ public class QuartzJobController {
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
-    @Log("修改定时任务")
     @ApiOperation("修改定时任务")
     @PutMapping
     @PreAuthorize("@el.check('timing:edit')")
@@ -104,7 +101,6 @@ public class QuartzJobController {
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
-    @Log("更改定时任务状态")
     @ApiOperation("更改定时任务状态")
     @PutMapping(value = "/{id}")
     @PreAuthorize("@el.check('timing:edit')")
@@ -113,7 +109,6 @@ public class QuartzJobController {
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
-    @Log("执行定时任务")
     @ApiOperation("执行定时任务")
     @PutMapping(value = "/exec/{id}")
     @PreAuthorize("@el.check('timing:edit')")
@@ -122,7 +117,6 @@ public class QuartzJobController {
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
-    @Log("删除定时任务")
     @ApiOperation("删除定时任务")
     @DeleteMapping
     @PreAuthorize("@el.check('timing:del')")

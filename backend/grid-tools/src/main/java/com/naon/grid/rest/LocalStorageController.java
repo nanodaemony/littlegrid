@@ -16,7 +16,6 @@
 package com.naon.grid.rest;
 
 import lombok.RequiredArgsConstructor;
-import com.naon.grid.annotation.Log;
 import com.naon.grid.domain.LocalStorage;
 import com.naon.grid.exception.BadRequestException;
 import com.naon.grid.service.LocalStorageService;
@@ -82,7 +81,6 @@ public class LocalStorageController {
     }
 
     @PutMapping
-    @Log("修改文件")
     @ApiOperation("修改文件")
     @PreAuthorize("@el.check('storage:edit')")
     public ResponseEntity<Object> updateFile(@Validated @RequestBody LocalStorage resources){
@@ -90,7 +88,6 @@ public class LocalStorageController {
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
-    @Log("删除文件")
     @DeleteMapping
     @ApiOperation("多选删除")
     public ResponseEntity<Object> deleteFile(@RequestBody Long[] ids) {

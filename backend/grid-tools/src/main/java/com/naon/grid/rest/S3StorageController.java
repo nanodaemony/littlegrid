@@ -19,7 +19,6 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import com.naon.grid.annotation.Log;
 import com.naon.grid.config.AmzS3Config;
 import com.naon.grid.domain.S3Storage;
 import com.naon.grid.service.S3StorageService;
@@ -77,7 +76,6 @@ public class S3StorageController {
         return new ResponseEntity<>(map,HttpStatus.OK);
     }
 
-    @Log("下载文件")
     @ApiOperation("下载文件")
     @GetMapping(value = "/download/{id}")
     public ResponseEntity<Object> downloadS3Storage(@PathVariable Long id){
@@ -93,7 +91,6 @@ public class S3StorageController {
         return new ResponseEntity<>(map,HttpStatus.OK);
     }
 
-    @Log("删除多个文件")
     @DeleteMapping
     @ApiOperation("删除多个文件")
     @PreAuthorize("@el.check('storage:del')")

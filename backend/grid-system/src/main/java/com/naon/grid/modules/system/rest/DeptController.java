@@ -19,7 +19,6 @@ import cn.hutool.core.collection.CollectionUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
-import com.naon.grid.annotation.Log;
 import com.naon.grid.exception.BadRequestException;
 import com.naon.grid.modules.system.domain.Dept;
 import com.naon.grid.modules.system.service.DeptService;
@@ -87,7 +86,6 @@ public class DeptController {
         return new ResponseEntity<>(deptService.buildTree(new ArrayList<>(deptSet)),HttpStatus.OK);
     }
 
-    @Log("新增部门")
     @ApiOperation("新增部门")
     @PostMapping
     @PreAuthorize("@el.check('dept:add')")
@@ -99,7 +97,6 @@ public class DeptController {
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
-    @Log("修改部门")
     @ApiOperation("修改部门")
     @PutMapping
     @PreAuthorize("@el.check('dept:edit')")
@@ -108,7 +105,6 @@ public class DeptController {
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
-    @Log("删除部门")
     @ApiOperation("删除部门")
     @DeleteMapping
     @PreAuthorize("@el.check('dept:del')")

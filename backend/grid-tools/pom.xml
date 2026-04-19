@@ -16,10 +16,9 @@
     </properties>
 
     <dependencies>
-        <!-- 同时需要common模块和logging模块只需要引入logging模块即可 -->
         <dependency>
             <groupId>com.naon.grid</groupId>
-            <artifactId>grid-logging</artifactId>
+            <artifactId>grid-common</artifactId>
             <version>2.7</version>
         </dependency>
 

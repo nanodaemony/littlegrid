@@ -1,6 +1,5 @@
 package com.naon.grid.modules.app.rest;
 
-import com.naon.grid.annotation.Log;
 import com.naon.grid.annotation.rest.AnonymousPostMapping;
 import com.naon.grid.modules.app.security.AppTokenProvider;
 import com.naon.grid.modules.app.service.AppAuthService;
@@ -31,7 +30,6 @@ public class AppAuthController {
     private final AppTokenProvider appTokenProvider;
     private final SecurityProperties securityProperties;
 
-    @Log("APP用户注册")
     @ApiOperation("用户注册")
     @AnonymousPostMapping("/register")
     public ResponseEntity<TokenDTO> register(@Validated @RequestBody RegisterDTO registerDTO,
@@ -40,7 +38,6 @@ public class AppAuthController {
         return ResponseEntity.ok(tokenDTO);
     }
 
-    @Log("APP用户登录")
     @ApiOperation("用户登录")
     @AnonymousPostMapping("/login")
     public ResponseEntity<TokenDTO> login(@Validated @RequestBody LoginDTO loginDTO,
@@ -49,7 +46,6 @@ public class AppAuthController {
         return ResponseEntity.ok(tokenDTO);
     }
 
-    @Log("APP用户退出")
     @ApiOperation("退出登录")
     @AnonymousPostMapping("/logout")
     public ResponseEntity<Void> logout(@RequestParam String deviceId,
@@ -63,7 +59,6 @@ public class AppAuthController {
         return ResponseEntity.ok().build();
     }
 
-    @Log("APP用户更新信息")
     @ApiOperation("更新用户信息")
     @AnonymousPostMapping("/user/update")
     public ResponseEntity<AppUserDTO> updateUser(@Validated @RequestBody UpdateUserDTO updateUserDTO,

@@ -20,7 +20,6 @@ import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import com.naon.grid.annotation.rest.AnonymousAccess;
-import com.naon.grid.annotation.Log;
 import com.naon.grid.annotation.rest.AnonymousGetMapping;
 import com.naon.grid.domain.vo.TradeVo;
 import com.naon.grid.domain.AlipayConfig;
@@ -57,7 +56,6 @@ public class AliPayController {
         return new ResponseEntity<>(alipayService.find(), HttpStatus.OK);
     }
 
-    @Log("配置支付宝")
     @ApiOperation("配置支付宝")
     @PutMapping
     public ResponseEntity<Object> updateAliPayConfig(@Validated @RequestBody AlipayConfig alipayConfig) {
@@ -65,7 +63,6 @@ public class AliPayController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @Log("支付宝PC网页支付")
     @ApiOperation("PC网页支付")
     @PostMapping(value = "/toPayAsPC")
     public ResponseEntity<String> toPayAsPc(@Validated @RequestBody TradeVo trade) throws Exception {
@@ -75,7 +72,6 @@ public class AliPayController {
         return ResponseEntity.ok(payUrl);
     }
 
-    @Log("支付宝手机网页支付")
     @ApiOperation("手机网页支付")
     @PostMapping(value = "/toPayAsWeb")
     public ResponseEntity<String> toPayAsWeb(@Validated @RequestBody TradeVo trade) throws Exception {
