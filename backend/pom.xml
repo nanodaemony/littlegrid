@@ -12,7 +12,6 @@
         <module>grid-logging</module>
         <module>grid-system</module>
         <module>grid-tools</module>
-        <module>grid-generator</module>
         <module>grid-app</module>
     </modules>
 

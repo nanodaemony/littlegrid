@@ -12,7 +12,6 @@ COPY grid-common grid-common
 COPY grid-logging grid-logging
 COPY grid-system grid-system
 COPY grid-tools grid-tools
-COPY grid-generator grid-generator
 COPY grid-app grid-app
 
 # 从 pom.xml 中移除 grid-app 模块以避免循环依赖
