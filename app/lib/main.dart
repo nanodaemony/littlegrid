@@ -7,6 +7,7 @@ import 'core/ui/theme.dart';
 import 'pages/debug_page.dart';
 import 'pages/grid_page.dart';
 import 'pages/profile_page.dart';
+import 'pages/design_page.dart';
 import 'providers/app_provider.dart';
 import 'providers/auth_provider.dart';
 import 'tools/coin/coin_tool.dart';
@@ -155,6 +156,7 @@ class _MainPageState extends State<MainPage> {
     GridPage(),
     ProfilePage(),
     DebugPage(),
+    DesignPage(),
   ];
 
   @override
@@ -192,6 +194,10 @@ class _MainPageState extends State<MainPage> {
           BottomNavigationBarItem(
             icon: Icon(Icons.construction),
             label: 'debug',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.palette),
+            label: '设计',
           ),
         ],
       ),
