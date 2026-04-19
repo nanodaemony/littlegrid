@@ -223,8 +223,6 @@ class _SettingsPageState extends State<SettingsPage> {
               ),
             ),
           ),
-          if (children.isNotEmpty)
-            Container(height: 1, color: AppColors.divider),
           ...children.asMap().entries.map((entry) {
             final index = entry.key;
             final child = entry.value;
