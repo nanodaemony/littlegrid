@@ -180,6 +180,56 @@ class _SettingsPageState extends State<SettingsPage> {
     );
   }
 
+  Widget _buildSectionCard({
+    required String title,
+    required List<Widget> children,
+  }) {
+    return Container(
+      margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(16),
+        boxShadow: const [
+          BoxShadow(
+            color: Color(0x14000000),
+            blurRadius: 12,
+            offset: Offset(0, 4),
+          ),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Padding(
+            padding: const EdgeInsets.fromLTRB(16, 12, 16, 8),
+            child: Text(
+              title,
+              style: const TextStyle(
+                fontSize: 12,
+                fontWeight: FontWeight.w600,
+                color: AppColors.primary,
+              ),
+            ),
+          ),
+          if (children.isNotEmpty)
+            Container(height: 1, color: AppColors.divider),
+          ...children.asMap().entries.map((entry) {
+            final index = entry.key;
+            final child = entry.value;
+            final isLast = index == children.length - 1;
+            return Column(
+              children: [
+                child,
+                if (!isLast)
+                  Container(height: 1, color: const Color(0xFFF0F0F0)),
+              ],
+            );
+          }),
+        ],
+      ),
+    );
+  }
+
   void _showClearCacheDialog() {
     showDialog(
       context: context,
