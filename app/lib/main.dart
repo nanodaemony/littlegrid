@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import 'core/services/banner_queue.dart';
 import 'core/services/debug_log_service.dart';
 import 'core/services/in_app_banner_service.dart';
+import 'core/services/notification_service.dart';
 import 'core/services/tool_registry.dart';
 import 'core/ui/theme.dart';
 import 'core/widgets/in_app_banner.dart';
@@ -50,6 +51,11 @@ import 'tools/maze/maze_tool.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  // 初始化通知服务
+  final notificationService = NotificationService();
+  await notificationService.initialize();
+  await notificationService.requestPermissions();
 
   // 注册工具
   ToolRegistry.register(CoinTool());

@@ -250,7 +250,6 @@ class PomodoroService extends ChangeNotifier {
     // Schedule without waiting
     () async {
       final notificationService = NotificationService();
-      await notificationService.initialize();
 
       // Cancel any existing notifications for this session
       await notificationService.cancel(1000);
@@ -271,7 +270,6 @@ class PomodoroService extends ChangeNotifier {
     // Cancel without waiting
     () async {
       final notificationService = NotificationService();
-      await notificationService.initialize();
       await notificationService.cancel(1000);
       await notificationService.cancel(1001);
     }();
