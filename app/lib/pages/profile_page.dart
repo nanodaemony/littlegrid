@@ -84,12 +84,11 @@ class _ProfilePageState extends State<ProfilePage> {
           // 用户信息卡片
           _buildUserCard(),
 
-          const Divider(height: 32),
-
-          // 功能列表
-          _buildMenuItem(
+          // 功能列表 - 独立卡片风格
+          _buildMenuItemCard(
             icon: Icons.settings,
             title: '设置',
+            iconBackgroundColor: AppColors.primary,
             onTap: () {
               Navigator.push(
                 context,
@@ -99,9 +98,10 @@ class _ProfilePageState extends State<ProfilePage> {
               );
             },
           ),
-          _buildMenuItem(
+          _buildMenuItemCard(
             icon: Icons.feedback,
             title: '反馈建议',
+            iconBackgroundColor: AppColors.success,
             onTap: () {
               Navigator.push(
                 context,
@@ -111,13 +111,15 @@ class _ProfilePageState extends State<ProfilePage> {
               );
             },
           ),
-          _buildMenuItem(
+          _buildMenuItemCard(
             icon: Icons.info,
             title: '关于我们',
+            iconBackgroundColor: AppColors.warning,
             onTap: () {
               _showAboutDialog();
             },
           ),
+          const SizedBox(height: 24),
         ],
       ),
     );
