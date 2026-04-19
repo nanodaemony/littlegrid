@@ -122,7 +122,7 @@ class _ThemePageState extends State<ThemePage> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             const Padding(
-              padding: EdgeInsets.fromLTRB(16, 24, 16, 12),
+              padding: EdgeInsets.fromLTRB(0, 24, 0, 12),
               child: Text(
                 '纯色主题',
                 style: TextStyle(
@@ -132,43 +132,40 @@ class _ThemePageState extends State<ThemePage> {
                 ),
               ),
             ),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
-              child: GridView.builder(
-                shrinkWrap: true,
-                physics: const NeverScrollableScrollPhysics(),
-                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 2,
-                  crossAxisSpacing: 12,
-                  mainAxisSpacing: 12,
-                  childAspectRatio: 2.5,
-                ),
-                itemCount: CardThemeConstants.allSolidColors.length,
-                itemBuilder: (context, index) {
-                  final bg = CardThemeConstants.allSolidColors[index];
-                  final isSelected = currentBg.type == bg.type && currentBg.colorKey == bg.colorKey;
-                  final colors = CardThemeConstants.getColors(bg);
-
-                  return GestureDetector(
-                    onTap: () {
-                      appProvider.setPreviewBackground(bg);
-                    },
-                    child: Container(
-                      decoration: BoxDecoration(
-                        gradient: LinearGradient(
-                          colors: colors,
-                          begin: Alignment.topLeft,
-                          end: Alignment.bottomRight,
-                        ),
-                        borderRadius: BorderRadius.circular(12),
-                        border: isSelected
-                            ? Border.all(color: AppColors.primary, width: 3)
-                            : null,
-                      ),
-                    ),
-                  );
-                },
+            GridView.builder(
+              shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
+              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 2,
+                crossAxisSpacing: 12,
+                mainAxisSpacing: 12,
+                childAspectRatio: 2.5,
               ),
+              itemCount: CardThemeConstants.allSolidColors.length,
+              itemBuilder: (context, index) {
+                final bg = CardThemeConstants.allSolidColors[index];
+                final isSelected = currentBg.type == bg.type && currentBg.colorKey == bg.colorKey;
+                final colors = CardThemeConstants.getColors(bg);
+
+                return GestureDetector(
+                  onTap: () {
+                    appProvider.setPreviewBackground(bg);
+                  },
+                  child: Container(
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        colors: colors,
+                        begin: Alignment.topLeft,
+                        end: Alignment.bottomRight,
+                      ),
+                      borderRadius: BorderRadius.circular(12),
+                      border: isSelected
+                          ? Border.all(color: AppColors.primary, width: 3)
+                          : null,
+                    ),
+                  ),
+                );
+              },
             ),
           ],
         );
@@ -189,7 +186,7 @@ class _ThemePageState extends State<ThemePage> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             const Padding(
-              padding: EdgeInsets.fromLTRB(16, 24, 16, 12),
+              padding: EdgeInsets.fromLTRB(0, 24, 0, 12),
               child: Text(
                 '背景图片',
                 style: TextStyle(
@@ -199,38 +196,35 @@ class _ThemePageState extends State<ThemePage> {
                 ),
               ),
             ),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
-              child: GridView.builder(
-                shrinkWrap: true,
-                physics: const NeverScrollableScrollPhysics(),
-                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 2,
-                  crossAxisSpacing: 12,
-                  mainAxisSpacing: 12,
-                  childAspectRatio: 2.5,
-                ),
-                itemCount: allOptions.length,
-                itemBuilder: (context, index) {
-                  final bg = allOptions[index];
-                  final isSelected = _isBackgroundEqual(currentBg, bg);
-
-                  return GestureDetector(
-                    onTap: () {
-                      appProvider.setPreviewBackground(bg);
-                    },
-                    child: Container(
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(12),
-                        border: isSelected
-                            ? Border.all(color: AppColors.primary, width: 3)
-                            : null,
-                      ),
-                      child: _buildOptionPreview(bg),
-                    ),
-                  );
-                },
+            GridView.builder(
+              shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
+              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 2,
+                crossAxisSpacing: 12,
+                mainAxisSpacing: 12,
+                childAspectRatio: 2.5,
               ),
+              itemCount: allOptions.length,
+              itemBuilder: (context, index) {
+                final bg = allOptions[index];
+                final isSelected = _isBackgroundEqual(currentBg, bg);
+
+                return GestureDetector(
+                  onTap: () {
+                    appProvider.setPreviewBackground(bg);
+                  },
+                  child: Container(
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(12),
+                      border: isSelected
+                          ? Border.all(color: AppColors.primary, width: 3)
+                          : null,
+                    ),
+                    child: _buildOptionPreview(bg),
+                  ),
+                );
+              },
             ),
           ],
         );
@@ -261,7 +255,7 @@ class _ThemePageState extends State<ThemePage> {
               child: Center(
                 child: Icon(
                   Icons.image,
-                  color: Colors.grey[600],
+                  color: Colors.grey[60],
                   size: 32,
                 ),
               ),
@@ -323,11 +317,17 @@ class _ThemePageState extends State<ThemePage> {
       ),
       body: Column(
         children: [
+          Padding(
+            padding: const EdgeInsets.all(16),
+            child: SizedBox(
+              width: double.infinity,
+              child: _buildPreviewCard(),
+            ),
+          ),
           Expanded(
             child: ListView(
-              padding: const EdgeInsets.all(16),
+              padding: const EdgeInsets.symmetric(horizontal: 16),
               children: [
-                _buildPreviewCard(),
                 _buildSolidColorSection(),
                 _buildBackgroundImageSection(),
                 const SizedBox(height: 24),

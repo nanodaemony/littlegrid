@@ -100,13 +100,6 @@ class _ProfilePageState extends State<ProfilePage> {
             },
           ),
           _buildMenuItem(
-            icon: Icons.bar_chart,
-            title: '使用统计',
-            onTap: () {
-              // TODO: 使用统计
-            },
-          ),
-          _buildMenuItem(
             icon: Icons.feedback,
             title: '反馈建议',
             onTap: () {

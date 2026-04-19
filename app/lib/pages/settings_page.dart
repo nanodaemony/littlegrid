@@ -13,9 +13,7 @@ class SettingsPage extends StatefulWidget {
 }
 
 class _SettingsPageState extends State<SettingsPage> {
-  bool _isDarkMode = false;
   bool _notificationsEnabled = true;
-  String _language = '简体中文';
 
   @override
   Widget build(BuildContext context) {
@@ -25,23 +23,25 @@ class _SettingsPageState extends State<SettingsPage> {
       ),
       body: ListView(
         children: [
-          // 外观设置
-          _buildSectionHeader('外观'),
-          _buildSwitchItem(
-            icon: Icons.dark_mode,
-            title: '深色模式',
-            subtitle: '跟随系统',
-            value: _isDarkMode,
-            onChanged: (value) {
-              setState(() => _isDarkMode = value);
+          // 账号设置
+          _buildSectionHeader('账号'),
+          _buildMenuItem(
+            icon: Icons.person_outline,
+            title: '我的信息',
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const MyInfoPage(),
+                ),
+              );
             },
           ),
-          _buildMenuItem(
-            icon: Icons.language,
-            title: '语言',
-            subtitle: _language,
-            onTap: () => _showLanguageDialog(),
-          ),
+
+          const Divider(),
+
+          // 外观设置
+          _buildSectionHeader('外观'),
           _buildMenuItem(
             icon: Icons.palette,
             title: '主题',
@@ -65,23 +65,6 @@ class _SettingsPageState extends State<SettingsPage> {
             value: _notificationsEnabled,
             onChanged: (value) {
               setState(() => _notificationsEnabled = value);
-            },
-          ),
-
-          const Divider(),
-
-          // 账号设置
-          _buildSectionHeader('账号'),
-          _buildMenuItem(
-            icon: Icons.person_outline,
-            title: '我的信息',
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => const MyInfoPage(),
-                ),
-              );
             },
           ),
 
@@ -194,33 +177,6 @@ class _SettingsPageState extends State<SettingsPage> {
       subtitle: subtitle != null ? Text(subtitle) : null,
       trailing: const Icon(Icons.chevron_right),
       onTap: onTap,
-    );
-  }
-
-  void _showLanguageDialog() {
-    final languages = ['简体中文', '繁體中文', 'English'];
-    showDialog(
-      context: context,
-      builder: (context) => StatefulBuilder(
-        builder: (context, setDialogState) => AlertDialog(
-          title: const Text('选择语言'),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: languages.map((lang) {
-              return ListTile(
-                title: Text(lang),
-                trailing: _language == lang
-                    ? const Icon(Icons.check, color: AppColors.primary)
-                    : null,
-                onTap: () {
-                  setState(() => _language = lang);
-                  Navigator.pop(context);
-                },
-              );
-            }).toList(),
-          ),
-        ),
-      ),
     );
   }
 
