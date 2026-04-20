@@ -11,6 +11,7 @@
         <module>grid-common</module>
         <module>grid-tools</module>
         <module>grid-app</module>
+        <module>grid-admin</module>
     </modules>
 
     <name>Little Grid</name>
