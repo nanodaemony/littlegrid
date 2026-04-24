@@ -37,7 +37,9 @@ public class AdminAuthController {
     @ApiOperation("Admin登录")
     public ResponseEntity<Map<String, Object>> login(@Validated @RequestBody LoginRequest request) {
         if (!adminUsername.equals(request.getUsername()) || !adminPassword.equals(request.getPassword())) {
-            return ResponseEntity.status(401).body(Map.of("message", "用户名或密码错误"));
+            Map<String, Object> err = new HashMap<>();
+            err.put("message", "用户名或密码错误");
+            return ResponseEntity.status(401).body(err);
         }
 
         String token = adminTokenProvider.createToken(request.getUsername());
@@ -52,10 +54,15 @@ public class AdminAuthController {
     public ResponseEntity<Map<String, Object>> verify(@RequestHeader("Authorization") String authHeader) {
         String token = authHeader.startsWith("Bearer ") ? authHeader.substring(7) : authHeader;
         if (!adminTokenProvider.validateToken(token)) {
-            return ResponseEntity.status(401).body(Map.of("message", "Token无效或已过期"));
+            Map<String, Object> err = new HashMap<>();
+            err.put("message", "Token无效或已过期");
+            return ResponseEntity.status(401).body(err);
         }
 
         String username = adminTokenProvider.getUsernameFromToken(token);
-        return ResponseEntity.ok(Map.of("valid", true, "username", username));
+        Map<String, Object> result = new HashMap<>();
+        result.put("valid", true);
+        result.put("username", username);
+        return ResponseEntity.ok(result);
     }
 }
