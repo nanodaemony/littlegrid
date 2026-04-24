@@ -1,5 +1,4 @@
-# syntax=docker/dockerfile:1.4
-FROM maven:3.9-eclipse-temurin-17-alpine AS builder
+FROM maven:3.9-amazoncorretto-8 AS builder
 
 WORKDIR /app
 
@@ -11,9 +10,7 @@ COPY pom.xml .
 COPY grid-common grid-common
 COPY grid-tools grid-tools
 COPY grid-app grid-app
-
-# 从 pom.xml 中移除 grid-admin 模块（临时，直到编译问题解决）
-RUN sed -i '/<module>grid-admin<\/module>/d' pom.xml
+COPY grid-admin grid-admin
 
 # 下载依赖 - 使用缓存挂载持久化 Maven 本地仓库
 RUN --mount=type=cache,target=/root/.m2 \
@@ -24,7 +21,7 @@ RUN --mount=type=cache,target=/root/.m2 \
     mvn clean package -DskipTests
 
 # 运行时镜像
-FROM eclipse-temurin:17-jre-alpine
+FROM amazoncorretto:8-alpine
 
 WORKDIR /app
 

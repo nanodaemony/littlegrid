@@ -8,6 +8,8 @@
 DB_ROOT_PASSWORD=your_password
 DB_NAME=little-grid
 REDIS_PWD=your_password
+ADMIN_USERNAME=admin
+ADMIN_PASSWORD=your_password
 ```
 
 ## 部署命令
@@ -24,7 +26,7 @@ REDIS_PWD=your_password
 # 3. 部署 Spring Boot Backend
 ./manage.sh backend
 
-# 4. 部署 Admin Web Frontend
+# 4. 部署 Admin Frontend
 ./manage.sh frontend
 ```
 
@@ -67,7 +69,7 @@ docker run -d \
   -v littlegrid-mysql-data:/var/lib/mysql \
   -v $(pwd)/backend/sql:/docker-entrypoint-initdb.d:ro \
   -e MYSQL_ROOT_PASSWORD=your_password \
-  -e MYSQL_DATABASE=eladmin \
+  -e MYSQL_DATABASE=little-grid \
   -e TZ=Asia/Shanghai \
   mysql:8.0 \
   --character-set-server=utf8mb4 \
@@ -97,24 +99,29 @@ docker run -d \
   --restart unless-stopped \
   -p 8000:8000 \
   -v $(pwd)/logs:/app/logs \
-  -e SPRING_DATASOURCE_DRUID_URL="jdbc:p6spy:mysql://littlegrid-mysql:3306/eladmin?serverTimezone=Asia/Shanghai&characterEncoding=utf8&useSSL=false&allowPublicKeyRetrieval=true" \
-  -e SPRING_DATASOURCE_USERNAME=root \
-  -e SPRING_DATASOURCE_PASSWORD=your_password \
+  -e SPRING_PROFILES_ACTIVE=prod \
+  -e DB_HOST=littlegrid-mysql \
+  -e DB_PORT=3306 \
+  -e DB_NAME=little-grid \
+  -e DB_USER=root \
+  -e DB_PWD=your_password \
   -e REDIS_HOST=littlegrid-redis \
+  -e REDIS_PORT=6379 \
   -e REDIS_PWD=your_password \
+  -e ADMIN_USERNAME=admin \
+  -e ADMIN_PASSWORD=your_password \
   littlegrid-backend:latest
 ```
 
 ### Frontend
 
 ```bash
-cd admin-web && docker build -t littlegrid-frontend:latest .
+cd admin && docker build -t littlegrid-frontend:latest .
 docker run -d \
   --name littlegrid-frontend \
   --network littlegrid-network \
   --restart unless-stopped \
   -p 8001:8001 \
-  --add-host=host.docker.internal:host-gateway \
   littlegrid-frontend:latest
 ```
 

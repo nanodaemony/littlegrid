@@ -16,6 +16,8 @@ DATA_DIR="/home/nano/littlegrid-data"
 MYSQL_PWD=""
 REDIS_PWD=""
 DB_NAME="eladmin"
+ADMIN_USERNAME=""
+ADMIN_PASSWORD=""
 NETWORK="littlegrid-network"
 
 # 颜色输出
@@ -42,6 +44,8 @@ load_env() {
         DB_ROOT_PASSWORD) MYSQL_PWD="$value" ;;
         REDIS_PWD) REDIS_PWD="$value" ;;
         DB_NAME) DB_NAME="$value" ;;
+        ADMIN_USERNAME) ADMIN_USERNAME="$value" ;;
+        ADMIN_PASSWORD) ADMIN_PASSWORD="$value" ;;
       esac
     done < "$SCRIPT_DIR/.env"
   fi
@@ -128,6 +132,8 @@ deploy_backend() {
     -e REDIS_PORT=6379 \
     -e REDIS_PWD="$REDIS_PWD" \
     -e SERVER_PORT=8000 \
+    -e ADMIN_USERNAME="${ADMIN_USERNAME:-admin}" \
+    -e ADMIN_PASSWORD="${ADMIN_PASSWORD:-admin123}" \
     littlegrid-backend:latest
 
   print_success "Backend 部署完成 (端口: 8000)"
@@ -136,7 +142,7 @@ deploy_backend() {
 # 部署 Frontend
 deploy_frontend() {
   print_info "构建 Frontend..."
-  docker build -t littlegrid-frontend:latest "$SCRIPT_DIR/admin-web"
+  docker build -t littlegrid-frontend:latest "$SCRIPT_DIR/admin"
 
   print_info "部署 Frontend..."
   docker stop littlegrid-frontend 2>/dev/null || true
