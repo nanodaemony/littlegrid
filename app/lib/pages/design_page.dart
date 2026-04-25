@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../core/ui/app_colors.dart';
 import 'design/button_design_page.dart';
 import 'design/card_design_page.dart';
+import 'design/auth_design_page.dart';
 
 class DesignPage extends StatelessWidget {
   const DesignPage({super.key});
@@ -39,10 +40,15 @@ class DesignPage extends StatelessWidget {
             },
           ),
           _buildMenuItem(
-            icon: Icons.radio_button_unchecked,
-            title: '按钮3',
+            icon: Icons.lock_outline,
+            title: '认证页面设计',
             onTap: () {
-              _showComingSoon(context);
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const AuthDesignPage(),
+                ),
+              );
             },
           ),
           _buildMenuItem(
