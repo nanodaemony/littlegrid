@@ -23,7 +23,7 @@ public class AdminTokenProvider implements InitializingBean {
     private Key signingKey;
     private JwtParser jwtParser;
 
-    @Value("${admin.auth.base64-secret:ZmQ0ZjI3N2Y0YTUxNjkzN2Y0ZjI3N2Y0YTUxNjkzN2Y0ZjI3N2Y0YTUxNjkz}")
+    @Value("${admin.auth.base64-secret:Y2Y3ZmI3MjdhN2ZmMjNhODViOTg1ZGE0NTBjMGM4NDA5NzYxMjdjOWMwYWRmZTBlZjlhNGY3ZTg4Y2U3YTE1ODVkZDU5Y2Y3OGYwZWE1NzUzNWQ2YjFjZDc0NGMxZWU2MmQ3MjY1NzJmNTE0MzI=}")
     private String base64Secret;
 
     @Value("${admin.auth.token-validity-in-seconds:86400}")

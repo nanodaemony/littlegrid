@@ -1,0 +1,49 @@
+server:
+  port: ${SERVER_PORT:8000}
+  http2:
+    enabled: true
+  compression:
+    enabled: true
+    mime-types: text/html, text/xml, text/plain, application/json
+
+spring:
+  freemarker:
+    check-template-location: false
+  profiles:
+    active: ${SPRING_PROFILES_ACTIVE:dev}
+  data:
+    redis:
+      repositories:
+        enabled: false
+  jpa:
+    hibernate:
+      ddl-auto: none
+    open-in-view: true
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQL5InnoDBDialect
+  redis:
+    database: ${REDIS_DB:0}
+    host: ${REDIS_HOST:127.0.0.1}
+    port: ${REDIS_PORT:6379}
+    password: ${REDIS_PWD:}
+    timeout: 5000
+    lettuce:
+      pool:
+        max-active: 30
+        max-wait: -1
+        max-idle: 20
+        min-idle: 1
+
+task:
+  pool:
+    core-pool-size: 10
+    max-pool-size: 30
+    keep-alive-seconds: 60
+    queue-capacity: 50
+
+code:
+  expiration: 300
+
+rsa:
+  private_key: MIIBUwIBADANBgkqhkiG9w0BAQEFAASCAT0wggE5AgEAAkEA0vfvyTdGJkdbHkB8mp0f3FE0GYP3AYPaJF7jUd1M0XxFSE2ceK3k2kw20YvQ09NJKk+OMjWQl9WitG9pB6tSCQIDAQABAkA2SimBrWC2/wvauBuYqjCFwLvYiRYqZKThUS3MZlebXJiLB+Ue/gUifAAKIg1avttUZsHBHrop4qfJCwAI0+YRAiEA+W3NK/RaXtnRqmoUUkb59zsZUBLpvZgQPfj1MhyHDz0CIQDYhsAhPJ3mgS64NbUZmGWuuNKp5coY2GIj/zYDMJp6vQIgUueLFXv/eZ1ekgz2Oi67MNCk5jeTF2BurZqNLR3MSmUCIFT3Q6uHMtsB9Eha4u7hS31tj1UWE+D+ADzp59MGnoftAiBeHT7gDMuqeJHPL4b+kC+gzV4FGTfhR9q3tTbklZkD2A==

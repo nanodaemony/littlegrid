@@ -41,6 +41,8 @@ public class AppSecurityConfig {
                 .antMatchers("/file/**").permitAll()
                 .antMatchers("/druid/**").permitAll()
                 .antMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+                .antMatchers("/api/admin/login").permitAll()
+                .antMatchers("/api/admin/verify").permitAll()
                 .anyRequest().authenticated()
                 .and().build();
     }

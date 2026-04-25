@@ -18,6 +18,7 @@ public class AdminSecurityConfig {
     @Bean
     public SecurityFilterChain adminFilterChain(HttpSecurity httpSecurity) throws Exception {
         return httpSecurity
+                .antMatcher("/api/admin/**")
                 .csrf().disable()
                 .sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
