@@ -43,6 +43,7 @@ public class AppSecurityConfig {
                 .antMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                 .antMatchers("/api/admin/login").permitAll()
                 .antMatchers("/api/admin/verify").permitAll()
+                .antMatchers("/api/admin/**").permitAll()
                 .anyRequest().authenticated()
                 .and().build();
     }
