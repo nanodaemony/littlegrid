@@ -130,6 +130,7 @@ class _ForgotPasswordPageCState extends State<ForgotPasswordPageC> {
                 foregroundColor: Colors.white,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(8),
+                ),
               ),
               child: const Text('发送验证码'),
             ),
